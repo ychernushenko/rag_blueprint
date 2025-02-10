@@ -45,11 +45,14 @@ It comes with built-in monitoring and observability tools for better troubleshoo
 - Any embedding model in the [Hugging Face](https://huggingface.co/) model hub
 
 #### Language Models
-- Any OpenAI-compatible API models
 - [OpenAI](https://openai.com/) models
+- Any OpenAI-compatible API models
+
+### Vector Stores
+- [Qdrant](https://qdrant.tech/)
+- [Chroma](https://www.trychroma.com/)
 
 ### Infrastructure
-- [Qdrant](https://qdrant.tech/) - Vector database
 - [PostgreSQL](https://www.postgresql.org/) - Metadata storage
 - Docker for containerization
 

@@ -44,4 +44,5 @@ The RAG blueprint project is a Retrieval-Augmented Generation system that integr
 - **Performance Monitoring**: Query and response tracking with [Langfuse](https://langfuse.com/)
 
 ### Quick Start
-- [Docs in progress]
+- [QuickStart Setup](quickstart/quickstart_setup.md)
+- [Dveloper Setup](quickstart/developer_setup.md)
