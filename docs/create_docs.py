@@ -187,9 +187,12 @@ def update_mkdocs_yml(nav_structure):
         },
         {
             "How to": [
-                {"How To Add a New LLM": "how_to/how_to_add_new_llm.md"},
+                {"Add a New LLM": "how_to/how_to_add_new_llm.md"},
                 {
-                    "How To Add a New Embedding Model": "how_to/how_to_add_new_embedding_model.md"
+                    "Add a New Embedding Model": "how_to/how_to_add_new_embedding_model.md"
+                },
+                {
+                    "Add a New Vector Store": "how_to/how_to_add_new_vector_store.md"
                 },
             ]
         },

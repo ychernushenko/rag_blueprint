@@ -1,6 +1,6 @@
 # How To Add New Embedding Model Implementation
 
-This guide outlines the process of adding support for a new embedding model implementation. We use the existing `OpenAIEmbeddingModelConfiguration` as an example, located in [embedding_model_configuration.py](src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_configuration.py) file.
+This guide outlines the process of adding support for a new embedding model implementation. We use the existing `OpenAIEmbeddingModelConfiguration` as an example, located in [embedding_model_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_configuration.py) file.
 
 ## Update Project Dependencies
 
@@ -150,7 +150,7 @@ AVAILABLE_EMBEDDING_MODELS = Union[..., OpenAIEmbeddingModelConfiguration]
 
 ## Create the Embedding Model Builder
 
-The builder is responsible for initializing the Embedding Model. Our implementation leverages llamaindex, to add the builder logic to [embedding_builders.py](src/common/builders/embedding_builders.py) we add necessary builder.
+The builder is responsible for initializing the Embedding Model. Our implementation leverages llamaindex, to add the builder logic to [embedding_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/embedding_builders.py) we add necessary builder.
 
 ```py
 from typing import TYPE_CHECKING
