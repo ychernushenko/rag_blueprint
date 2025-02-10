@@ -22,7 +22,7 @@ class LLMProviderNames(str, Enum):
 # Secrets
 class OpenAILLMSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LLMS__OPENAI__",
         env_nested_delimiter="__",
@@ -36,7 +36,7 @@ class OpenAILLMSecrets(BaseSettings):
 
 class OpenAILikeLLMSecrets(OpenAILLMSecrets):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LLMS__OPENAI_LIKE__",
         env_nested_delimiter="__",

@@ -18,7 +18,7 @@ class DatasourceName(str, Enum):
 
 class NotionSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__DATASOURCES__NOTION__",
         env_nested_delimiter="__",
@@ -32,7 +32,7 @@ class NotionSecrets(BaseSettings):
 
 class ConfluenceSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__DATASOURCES__CONFLUENCE__",
         env_nested_delimiter="__",

@@ -29,7 +29,7 @@ Next, define how secrets for the embedding model are handled. For OpenAI, this i
 ```py
 class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",

@@ -99,7 +99,7 @@ class CommonInitializer(ABC):
             "--config-file",
             type=str,
             help="Path to the configuration file.",
-            default="src/common/bootstrap/configuration/configuration.json",
+            default="configuration/configuration.default.json",
         )
         parser.add_argument(
             "--build-name",
@@ -111,7 +111,7 @@ class CommonInitializer(ABC):
             "--secrets-file",
             type=str,
             help="Path to the secrets file.",
-            default="env_vars/.env",
+            default="configuration/secrets.default.env",
         )
         return parser.parse_args()
 
