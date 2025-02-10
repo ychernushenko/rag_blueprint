@@ -1,6 +1,6 @@
 # How To Add New LLM Implementation
 
-This guide outlines the process of adding support for a new language model (LLM) implementation. We use the existing `OpenAILLMConfiguration` as an example, located in [llm_configuration.py](src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py) file.
+This guide outlines the process of adding support for a new language model (LLM) implementation. We use the existing `OpenAILLMConfiguration` as an example, located in [llm_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py) file.
 
 ## Update Project Dependencies
 
@@ -106,7 +106,7 @@ class OpenAILLMConfiguration(LLMConfiguration):
 
 # Create the LLM Builder
 
-The builder is responsible for initializing the LLM. Our implementation leverages [llamaindex](https://docs.llamaindex.ai/en/stable/), to add the builder logic to [llm_builders.py](src/common/builders/llm_builders.py) we add necessary builder.
+The builder is responsible for initializing the LLM. Our implementation leverages [llamaindex](https://docs.llamaindex.ai/en/stable/), to add the builder logic to [llm_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/llm_builders.py) we add necessary builder.
 
 ```py
 from typing import TYPE_CHECKING
