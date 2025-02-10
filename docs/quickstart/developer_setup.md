@@ -43,16 +43,16 @@ The default configuration assumes a Docker-based setup. For local development, m
         "embedding": {
             ...
             "vector_store": {
-                "host": "http://127.0.0.1",
+                "host": "127.0.0.1",
             },
             ...
         },
         "augmentation": {
             ...
             "langfuse": {
-                "host": "http://127.0.0.1",
+                "host": "127.0.0.1",
                 "database": {
-                    "host": "http://127.0.0.1",
+                    "host": "127.0.0.1",
                 }
             },
             ...

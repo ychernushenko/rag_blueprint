@@ -72,11 +72,13 @@ class OpenAILLMConfiguration(LLMConfiguration):
     )
 ```
 
-`provider`: Constrained to the openai value, ensuring only configurations matching `LLMProviderNames.OPENAI` are valid.
+`provider`: Constrained to the OpenAI value, ensuring only configurations matching `LLMProviderNames.OPENAI` are valid.
 
 `secrets`: Links the configuration to the `OpenAILLMSecrets` class.
 
 `builder`: Specifies a callable (e.g., `OpenAIBuilder.build`) responsible for initializing the LLM instance.
+
+Add configuration to `AVAILABLE_LLMS` static
 
 **Example JSON Configuration**
 
@@ -100,11 +102,17 @@ class OpenAILLMConfiguration(LLMConfiguration):
 - `max_retries`: Defines the retry policy for API calls.
 
 
+## Expose LLM Configuration
+
+To make pydantic parse corresponding json object to our `OpenAILLMConfiguration` we need to add it to `AVAILABLE_LLMS` variable:
+
+```py
+AVAILABLE_LLMS = Union[..., OpenAILLMConfiguration]
+```
 
 
 
-
-# Create the LLM Builder
+## Create the LLM Builder
 
 The builder is responsible for initializing the LLM. Our implementation leverages [llamaindex](https://docs.llamaindex.ai/en/stable/), to add the builder logic to [llm_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/llm_builders.py) we add necessary builder.
 
@@ -149,7 +157,7 @@ class OpenAIBuilder:
 
 - **Dependencies**: Use dependency injection (@inject) to ensure proper initialization.
 
-- **Configuration** Use: Extracts `api_key`, `model`, `max_tokens`, and `max_retries` from the `OpenAILLMConfiguration`.
+- **Configuration**: Extracts `api_key`, `model`, `max_tokens`, and `max_retries` from the `OpenAILLMConfiguration`.
 
 - **Library Integration**: Uses `llama_index.llms.openai.OpenAI` to create the LLM instance.
 
