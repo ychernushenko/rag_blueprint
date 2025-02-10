@@ -1,5 +1,5 @@
 version: '3'
-name: ragkb
+name: rag_blueprint
 services:
   # RAGKB services
   unit-tests:
