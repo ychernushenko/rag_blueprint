@@ -143,10 +143,11 @@ class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
 
     def model_post_init(self, __context):
         super().model_post_init(__context)
-        self.batch_size = (
-            self.max_request_size_in_tokens
-            // self.splitting.chunk_size_in_tokens
-        )
+        if self.splitting:
+            self.batch_size = (
+                self.max_request_size_in_tokens
+                // self.splitting.chunk_size_in_tokens
+            )
 
 
 class VoyageConfiguration(EmbeddingModelConfiguration):
