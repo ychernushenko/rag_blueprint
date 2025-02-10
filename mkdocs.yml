@@ -1,0 +1,116 @@
+nav:
+- Home: index.md
+- Quickstart:
+  - Quickstart Setup: quickstart/quickstart_setup.md
+  - Developer Setup: quickstart/developer_setup.md
+- How to:
+  - How To Add a New LLM: how_to/how_to_add_new_llm.md
+  - How To Add a New Embedding Model: how_to/how_to_add_new_embedding_model.md
+- Code Docs:
+  - Chat: src/chat.md
+  - Embed: src/embed.md
+  - Evaluate: src/evaluate.md
+  - Augmentation:
+    - Chainlit:
+      - Builders: src/augmentation/chainlit/builders.md
+      - Service: src/augmentation/chainlit/service.md
+      - Feedback: src/augmentation/chainlit/feedback.md
+    - Utils: src/augmentation/utils.md
+  - Common:
+    - Bootstrap:
+      - Initializer: src/common/bootstrap/initializer.md
+      - Configuration:
+        - Pipeline:
+          - Embedding:
+            - Datasources:
+              - Datasources_binder: src/common/bootstrap/configuration/pipeline/embedding/datasources/datasources_binder.md
+              - Datasources_binding_keys: src/common/bootstrap/configuration/pipeline/embedding/datasources/datasources_binding_keys.md
+              - Datasources_configuration: src/common/bootstrap/configuration/pipeline/embedding/datasources/datasources_configuration.md
+            - Embedding_model:
+              - Embedding_model_binder: src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_binder.md
+              - Splitting_configuration: src/common/bootstrap/configuration/pipeline/embedding/embedding_model/splitting_configuration.md
+              - Embedding_model_binding_keys: src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_binding_keys.md
+              - Embedding_model_configuration: src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_configuration.md
+            - Embedding_configuration: src/common/bootstrap/configuration/pipeline/embedding/embedding_configuration.md
+            - Vector_store:
+              - Vector_store_configuration: src/common/bootstrap/configuration/pipeline/embedding/vector_store/vector_store_configuration.md
+              - Vector_store_binder: src/common/bootstrap/configuration/pipeline/embedding/vector_store/vector_store_binder.md
+          - Pipeline_configuration: src/common/bootstrap/configuration/pipeline/pipeline_configuration.md
+          - Augmentation:
+            - Langfuse:
+              - Langfuse_configuration: src/common/bootstrap/configuration/pipeline/augmentation/langfuse/langfuse_configuration.md
+              - Langfuse_binder: src/common/bootstrap/configuration/pipeline/augmentation/langfuse/langfuse_binder.md
+              - Langfuse_binding_keys: src/common/bootstrap/configuration/pipeline/augmentation/langfuse/langfuse_binding_keys.md
+            - Augmentation_configuration: src/common/bootstrap/configuration/pipeline/augmentation/augmentation_configuration.md
+            - Query_engine:
+              - Query_engine_binder: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/query_engine_binder.md
+              - Retriever:
+                - Retriever_configuration: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/retriever/retriever_configuration.md
+                - Retriever_binding_keys: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/retriever/retriever_binding_keys.md
+                - Retriever_binder: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/retriever/retriever_binder.md
+              - Synthesizer:
+                - Synthesizer_binding_keys: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/synthesizer/synthesizer_binding_keys.md
+                - Synthesizer_configuration: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/synthesizer/synthesizer_configuration.md
+                - Synthesizer_binder: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/synthesizer/synthesizer_binder.md
+              - Llm_configuration: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.md
+              - Postprocessors:
+                - Postprocessors_binder: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/postprocessors/postprocessors_binder.md
+                - Postprocessors_binding_key: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/postprocessors/postprocessors_binding_key.md
+                - Postprocessors_configuration: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/postprocessors/postprocessors_configuration.md
+              - Query_engine_configuration: src/common/bootstrap/configuration/pipeline/augmentation/query_engine/query_engine_configuration.md
+            - Chainlit:
+              - Chainlit_configuration: src/common/bootstrap/configuration/pipeline/augmentation/chainlit/chainlit_configuration.md
+              - Chainlit_binder: src/common/bootstrap/configuration/pipeline/augmentation/chainlit/chainlit_binder.md
+          - Evaluation:
+            - Evaluation_binder: src/common/bootstrap/configuration/pipeline/evaluation/evaluation_binder.md
+            - Evaluation_binding_keys: src/common/bootstrap/configuration/pipeline/evaluation/evaluation_binding_keys.md
+            - Evaluation_configuration: src/common/bootstrap/configuration/pipeline/evaluation/evaluation_configuration.md
+        - Configuration: src/common/bootstrap/configuration/configuration.md
+        - Metadata:
+          - Metadata_configuration: src/common/bootstrap/configuration/metadata/metadata_configuration.md
+      - Base_binder: src/common/bootstrap/base_binder.md
+    - Langfuse:
+      - Builders: src/common/langfuse/builders.md
+      - Dataset: src/common/langfuse/dataset.md
+    - Retrievers: src/common/retrievers.md
+    - Logger: src/common/logger.md
+    - Exceptions: src/common/exceptions.md
+    - Builders:
+      - Query_engine_builders: src/common/builders/query_engine_builders.md
+      - Embedding_builders: src/common/builders/embedding_builders.md
+      - Retriever_builders: src/common/builders/retriever_builders.md
+      - Llm_builders: src/common/builders/llm_builders.md
+      - Client_builders: src/common/builders/client_builders.md
+      - Synthesizer_builders: src/common/builders/synthesizer_builders.md
+      - Callback_builders: src/common/builders/callback_builders.md
+      - Vector_store_builders: src/common/builders/vector_store_builders.md
+      - Postprocessor_builders: src/common/builders/postprocessor_builders.md
+    - Query_engine: src/common/query_engine.md
+  - Embedding:
+    - Datasources:
+      - Notion: src/embedding/datasources/notion.md
+      - Pdf: src/embedding/datasources/pdf.md
+      - Core: src/embedding/datasources/core.md
+      - Confluence: src/embedding/datasources/confluence.md
+    - Validators:
+      - Vector_store_validators: src/embedding/validators/vector_store_validators.md
+      - Builders: src/embedding/validators/builders.md
+    - Embedders:
+      - Default_embedder: src/embedding/embedders/default_embedder.md
+      - Builders: src/embedding/embedders/builders.md
+      - Base: src/embedding/embedders/base.md
+    - Orchestrators:
+      - Datasource_orchestrator: src/embedding/orchestrators/datasource_orchestrator.md
+      - Builders: src/embedding/orchestrators/builders.md
+      - Base: src/embedding/orchestrators/base.md
+  - Evaluation:
+    - Builders: src/evaluation/builders.md
+    - Evaluators: src/evaluation/evaluators.md
+plugins:
+- mkdocstrings
+- search
+repo_url: https://github.com/rag_blueprint/
+site_name: RAG Systems
+theme: readthedocs
+watch:
+- .

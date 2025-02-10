@@ -1,0 +1,32 @@
+name: Sync main to FELD M branches
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Update FELD M RAG Knowledge Base Branch
+        run: |
+          git checkout main
+          git fetch origin
+          git checkout feld-m-ragkb-main
+          git pull
+          git merge origin/main
+          git push origin feld-m-ragkb-main
