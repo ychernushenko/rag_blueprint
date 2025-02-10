@@ -7,7 +7,7 @@ from llama_index.embeddings.voyageai import VoyageEmbedding
 
 if TYPE_CHECKING:
     from common.bootstrap.configuration.pipeline.embedding.embedding_model.embedding_model_configuration import (
-        BGEConfiguration,
+        HuggingFaceConfiguration,
         OpenAIEmbeddingModelConfiguration,
         VoyageConfiguration,
     )
@@ -22,7 +22,7 @@ class HuggingFaceEmbeddingModelBuilder:
     @staticmethod
     @inject
     def build(
-        configuration: "BGEConfiguration",
+        configuration: "HuggingFaceConfiguration",
     ) -> HuggingFaceEmbedding:
         """Creates a configured HuggingFace embedding model.
 
@@ -33,7 +33,7 @@ class HuggingFaceEmbeddingModelBuilder:
             HuggingFaceEmbedding: Configured embedding model instance.
         """
         return HuggingFaceEmbedding(
-            model_name=configuration.name.value,
+            model_name=configuration.name,
             embed_batch_size=configuration.batch_size,
         )
 
