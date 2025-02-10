@@ -31,7 +31,7 @@ class OpenAILLMSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__LLMS__OPENAI__",
+        env_prefix="RAG__LLMS__OPENAI__",
         env_nested_delimiter="__",
         extra="ignore",
     )
@@ -41,14 +41,14 @@ class OpenAILLMSecrets(BaseSettings):
     )
 ```
 
-- `env_prefix`: Prefix for secrets, e.g., `RAGKB__LLMS__OPENAI__`.
-- **Environment Variable Naming**: To populate the api_key, use the variable `RAGKB__LLMS__OPENAI__API_KEY` in the environment file.
+- `env_prefix`: Prefix for secrets, e.g., `RAG__LLMS__OPENAI__`.
+- **Environment Variable Naming**: To populate the api_key, use the variable `RAG__LLMS__OPENAI__API_KEY` in the environment file.
 
 Example `.env` entry:
 
 ```sh
 ...
-RAGKB__LLMS__OPENAI__API_KEY=<openai_api_key>
+RAG__LLMS__OPENAI__API_KEY=<openai_api_key>
 ...
 ```
 
