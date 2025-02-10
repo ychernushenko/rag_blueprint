@@ -52,11 +52,12 @@ class CommonInitializer(ABC):
         args = self._parse_args()
         configuration_filename = args.config_file
         build_name = args.build_name
+        secrets_file = args.secrets_file
 
         with open(configuration_filename) as f:
             self.configuration_json = f.read()
         self.configuration = Configuration.model_validate_json(
-            self.configuration_json
+            self.configuration_json, context={"secrets_file": secrets_file}
         )
         self.configuration.metadata.build_name = build_name
         print(f"::{configuration_filename}")

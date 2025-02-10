@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Union
+from typing import Any, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
@@ -52,15 +52,19 @@ class LangfuseDatabaseConfiguration(BaseModel):
         "langfuse",
         description="Name of the langfuse database server's database.",
     )
-    secrets: Optional[LangfuseDatabaseSecrets] = Field(
+    secrets: LangfuseDatabaseSecrets = Field(
         None, description="The secrets for the langfuse database."
     )
 
-    def model_post_init(self, __context):
-        secrets = LangfuseDatabaseSecrets()
+    def model_post_init(self, context: Any) -> None:
+        self.secrets = self.get_secrets(secrets_file=context["secrets_file"])
+
+    def get_secrets(self, secrets_file: str) -> BaseSettings:
+        secrets_class = self.model_fields["secrets"].annotation
+        secrets = secrets_class(_env_file=secrets_file)
         if secrets is None:
-            raise ValueError("Secrets for Langfuse not found.")
-        self.secrets = secrets
+            raise ValueError(f"Secrets for {self.name} not found.")
+        return secrets
 
 
 class LangfuseDatasetConfiguration(BaseModel):
@@ -112,7 +116,7 @@ class LangfuseConfiguration(BaseModel):
         "chainlit_message_id: {message_id}",
         description="Format of the tag used to retrieve the trace by chainlit message id in langfuse",
     )
-    secrets: Optional[LangfuseSecrets] = Field(
+    secrets: LangfuseSecrets = Field(
         None, description="The secrets for the Langfuse."
     )
 
@@ -120,8 +124,12 @@ class LangfuseConfiguration(BaseModel):
     def url(self) -> str:
         return f"{self.protocol}://{self.host}:{self.port}"
 
-    def model_post_init(self, __context):
-        secrets = LangfuseSecrets()
+    def model_post_init(self, context: Any) -> None:
+        self.secrets = self.get_secrets(secrets_file=context["secrets_file"])
+
+    def get_secrets(self, secrets_file: str) -> BaseSettings:
+        secrets_class = self.model_fields["secrets"].annotation
+        secrets = secrets_class(_env_file=secrets_file)
         if secrets is None:
-            raise ValueError("Secrets for Langfuse not found.")
-        self.secrets = secrets
+            raise ValueError(f"Secrets for {self.name} not found.")
+        return secrets

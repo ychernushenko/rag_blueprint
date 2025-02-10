@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Literal, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
@@ -18,7 +18,6 @@ class DatasourceName(str, Enum):
 
 class NotionSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__DATASOURCES__NOTION__",
         env_nested_delimiter="__",
@@ -32,7 +31,6 @@ class NotionSecrets(BaseSettings):
 
 class ConfluenceSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__DATASOURCES__CONFLUENCE__",
         env_nested_delimiter="__",
@@ -64,12 +62,12 @@ class DatasourceConfiguration(BaseModel):
         None, description="The export limit for the data source."
     )
 
-    def model_post_init(self, __context):
-        self.secrets = self.get_secrets()
+    def model_post_init(self, context: Any) -> None:
+        self.secrets = self.get_secrets(secrets_file=context["secrets_file"])
 
-    def get_secrets(self) -> BaseSettings:
+    def get_secrets(self, secrets_file: str) -> BaseSettings:
         secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class()
+        secrets = secrets_class(_env_file=secrets_file)
         if secrets is None:
             raise ValueError(f"Secrets for {self.name} not found.")
         return secrets

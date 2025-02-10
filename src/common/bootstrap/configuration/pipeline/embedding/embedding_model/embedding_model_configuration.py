@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Callable, Literal, Optional, Union
+from typing import Any, Callable, Literal, Optional, Union
 
 import tiktoken
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
@@ -25,12 +25,14 @@ class EmbeddingModelProviderNames(str, Enum):
 
 # Secrets
 class HuggingFaceSecrets(BaseSettings):
-    pass
+    # Placeholder to succeed secrets intialization
+    model_config = ConfigDict(
+        extra="ignore",
+    )
 
 
 class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAGKB__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",
@@ -44,7 +46,6 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
 
 class VoyageSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAGKB__EMBEDDING_MODELS__VOYAGE__",
         env_nested_delimiter="__",
@@ -79,13 +80,13 @@ class EmbeddingModelConfiguration(BaseModel):
         exclude=True,
     )
 
-    def model_post_init(self, __context):
-        self.secrets = self.get_secrets()
+    def model_post_init(self, context: Any) -> None:
+        self.secrets = self.get_secrets(secrets_file=context["secrets_file"])
         self.tokenizer_func = self.get_tokenizer()
 
-    def get_secrets(self) -> BaseSettings:
+    def get_secrets(self, secrets_file: str) -> BaseSettings:
         secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class()
+        secrets = secrets_class(_env_file=secrets_file)
         if secrets is None:
             raise ValueError(f"Secrets for {self.name} not found.")
         return secrets
