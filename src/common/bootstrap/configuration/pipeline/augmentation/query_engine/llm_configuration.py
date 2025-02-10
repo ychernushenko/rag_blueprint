@@ -1,10 +1,10 @@
-from abc import ABC
 from enum import Enum
-from typing import Any, Callable, Literal, Optional, Union
+from typing import Callable, Literal, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, SecretStr
+from pydantic import ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
 
+from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 from common.builders.llm_builders import OpenAIBuilder, OpenAILikeBuilder
 
 
@@ -49,7 +49,7 @@ class OpenAILikeLLMSecrets(OpenAILLMSecrets):
     )
 
 
-class LLMConfiguration(BaseModel, ABC):
+class LLMConfiguration(ConfigurationWithSecrets):
     name: str = Field(..., description="The name of the language model.")
     max_tokens: int = Field(
         ..., description="The maximum number of tokens for the language model."
@@ -57,16 +57,6 @@ class LLMConfiguration(BaseModel, ABC):
     max_retries: int = Field(
         ..., description="The maximum number of retries for the language model."
     )
-
-    def model_post_init(self, context: Any) -> None:
-        self.secrets = self.get_secrets(secrets_file=context["secrets_file"])
-
-    def get_secrets(self, secrets_file: str) -> BaseSettings:
-        secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class(_env_file=secrets_file)
-        if secrets is None:
-            raise ValueError(f"Secrets for {self.name} not found.")
-        return secrets
 
 
 # Configuration

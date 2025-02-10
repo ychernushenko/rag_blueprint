@@ -1,14 +1,16 @@
+from abc import ABC
 from enum import Enum
 from typing import Any, Callable, Literal, Optional, Union
 
 import tiktoken
-from pydantic import BaseModel, ConfigDict, Field, SecretStr
+from pydantic import ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
 from transformers import AutoTokenizer
 
 from common.bootstrap.configuration.pipeline.embedding.embedding_model.splitting_configuration import (
     SplittingConfiguration,
 )
+from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 from common.builders.embedding_builders import (
     HuggingFaceEmbeddingModelBuilder,
     OpenAIEmbeddingModelBuilder,
@@ -60,7 +62,7 @@ class VoyageSecrets(BaseSettings):
 # Configuration
 
 
-class EmbeddingModelConfiguration(BaseModel):
+class EmbeddingModelConfiguration(ConfigurationWithSecrets, ABC):
     provider: EmbeddingModelProviderNames = Field(
         ..., description="The provider of the embedding model."
     )
@@ -81,15 +83,8 @@ class EmbeddingModelConfiguration(BaseModel):
     )
 
     def model_post_init(self, context: Any) -> None:
-        self.secrets = self.get_secrets(secrets_file=context["secrets_file"])
+        super().model_post_init(context)
         self.tokenizer_func = self.get_tokenizer()
-
-    def get_secrets(self, secrets_file: str) -> BaseSettings:
-        secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class(_env_file=secrets_file)
-        if secrets is None:
-            raise ValueError(f"Secrets for {self.name} not found.")
-        return secrets
 
     def get_tokenizer(self) -> Callable:
         match self.provider:
