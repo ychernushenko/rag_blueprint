@@ -187,6 +187,7 @@ def update_mkdocs_yml(nav_structure):
         },
         {
             "How to": [
+                {"Configure RAG System": "how_to/how_to_configure.md"},
                 {"Add a New LLM": "how_to/how_to_add_new_llm.md"},
                 {
                     "Add a New Embedding Model": "how_to/how_to_add_new_embedding_model.md"
@@ -194,6 +195,7 @@ def update_mkdocs_yml(nav_structure):
                 {
                     "Add a New Vector Store": "how_to/how_to_add_new_vector_store.md"
                 },
+                {"Add a New Datasource": "how_to/how_to_add_new_datasource.md"},
             ]
         },
         {
