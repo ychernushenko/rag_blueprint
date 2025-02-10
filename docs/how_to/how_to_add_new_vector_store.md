@@ -4,7 +4,7 @@ This guide outlines the process of adding support for a new vector store impleme
 
 ## Update Project Dependencies
 
-Since we will use [Chroma](https://www.trychroma.com/) vector store through [llamaindex](https://docs.llamaindex.ai/en/stable/) implementation add correspodning entry to `pyproject.toml`:
+Since we will use [Chroma](https://www.trychroma.com/) vector store through [llamaindex](https://docs.llamaindex.ai/en/stable/) implementation add correspodning entries to `pyproject.toml`:
 
 ```toml
 ...
