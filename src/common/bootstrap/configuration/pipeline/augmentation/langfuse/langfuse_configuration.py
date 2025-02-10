@@ -9,7 +9,7 @@ class LangfuseSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__LANGFUSE__",
+        env_prefix="RAG__LANGFUSE__",
         env_nested_delimiter="__",
         extra="ignore",
     )
@@ -26,7 +26,7 @@ class LangfuseDatabaseSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__LANGFUSE__DATABASE__",
+        env_prefix="RAG__LANGFUSE__DATABASE__",
         env_nested_delimiter="__",
         extra="ignore",
     )

@@ -38,7 +38,7 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__EMBEDDING_MODELS__OPEN_AI__",
+        env_prefix="RAG__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",
         extra="ignore",
     )
@@ -52,7 +52,7 @@ class VoyageSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__EMBEDDING_MODELS__VOYAGE__",
+        env_prefix="RAG__EMBEDDING_MODELS__VOYAGE__",
         env_nested_delimiter="__",
         extra="ignore",
     )

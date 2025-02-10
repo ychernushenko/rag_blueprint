@@ -18,15 +18,15 @@ llama-index-vector-stores-chroma==0.3.0
 In order to include it in the intialization script chroma has to be added to [docker-compose.yml](https://github.com/feld-m/rag_blueprint/blob/main/build/workstation/docker/docker-compose.yml):
 
 ```yml
-name: ragkb
+name: rag
 services:
 ...
   chroma:
     image: chromadb/chroma:0.6.4.dev19
     environment:
-      CHROMA_HOST_PORT: ${RAGKB__VECTOR_STORE__PORT_REST}
+      CHROMA_HOST_PORT: ${RAG__VECTOR_STORE__PORT_REST}
     ports:
-      - "${RAGKB__VECTOR_STORE__PORT_REST}:${RAGKB__VECTOR_STORE__PORT_REST}"
+      - "${RAG__VECTOR_STORE__PORT_REST}:${RAG__VECTOR_STORE__PORT_REST}"
     restart: unless-stopped
     volumes:
       - ./.docker-data/chroma:/chroma/chroma/
@@ -61,7 +61,7 @@ class ChromaSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__VECTOR_STORE__",
+        env_prefix="RAG__VECTOR_STORE__",
         env_nested_delimiter="__",
         extra="ignore",
     )

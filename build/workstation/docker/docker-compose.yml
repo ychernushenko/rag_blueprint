@@ -1,7 +1,7 @@
 version: '3'
-name: rag_blueprint
+name: rag
 services:
-  # RAGKB services
+  # RAG services
   unit-tests:
     build:
       context: ../../..
@@ -24,9 +24,9 @@ services:
         BUILD_NAME: "default-build-name"
         CONFIGURATION_FILE: "src/common/bootstrap/configuration/configuration.json"
         SECRETS_FILE: "env_vars/.env"
-        CHAINLIT_PORT: "${RAGKB__CHAINLIT__PORT}"
+        CHAINLIT_PORT: "${RAG__CHAINLIT__PORT}"
     ports:
-      -  "${RAGKB__CHAINLIT__PORT}:${RAGKB__CHAINLIT__PORT}"
+      -  "${RAG__CHAINLIT__PORT}:${RAG__CHAINLIT__PORT}"
     restart: unless-stopped
 
   evaluate:
@@ -42,9 +42,9 @@ services:
   qdrant:
     image: qdrant/qdrant:v1.9.0
     environment:
-      QDRANT__SERVICE__REST_PORT: ${RAGKB__VECTOR_STORE__PORT_REST}
+      QDRANT__SERVICE__REST_PORT: ${RAG__VECTOR_STORE__PORT_REST}
     ports:
-      - "${RAGKB__VECTOR_STORE__PORT_REST}:${RAGKB__VECTOR_STORE__PORT_REST}"
+      - "${RAG__VECTOR_STORE__PORT_REST}:${RAG__VECTOR_STORE__PORT_REST}"
     restart: unless-stopped
     volumes:
       - ./.docker-data/qdrant:/qdrant/storage
@@ -52,9 +52,9 @@ services:
   chroma:
     image: chromadb/chroma:0.6.4.dev19
     environment:
-      CHROMA_HOST_PORT: ${RAGKB__VECTOR_STORE__PORT_REST}
+      CHROMA_HOST_PORT: ${RAG__VECTOR_STORE__PORT_REST}
     ports:
-      - "${RAGKB__VECTOR_STORE__PORT_REST}:${RAGKB__VECTOR_STORE__PORT_REST}"
+      - "${RAG__VECTOR_STORE__PORT_REST}:${RAG__VECTOR_STORE__PORT_REST}"
     restart: unless-stopped
     volumes:
       - ./.docker-data/chroma:/chroma/chroma/
@@ -63,14 +63,14 @@ services:
     build:
       dockerfile: Dockerfile.postgres.langfuse
     environment:
-      RAGKB__LANGFUSE__DATABASE__NAME: ${RAGKB__LANGFUSE__DATABASE__NAME}
-      POSTGRES_USER: ${RAGKB__LANGFUSE__DATABASE__USER}
-      POSTGRES_PASSWORD: ${RAGKB__LANGFUSE__DATABASE__PASSWORD}
+      RAG__LANGFUSE__DATABASE__NAME: ${RAG__LANGFUSE__DATABASE__NAME}
+      POSTGRES_USER: ${RAG__LANGFUSE__DATABASE__USER}
+      POSTGRES_PASSWORD: ${RAG__LANGFUSE__DATABASE__PASSWORD}
       POSTGRES_DB: postgres
     ports:
-      - "${RAGKB__LANGFUSE__DATABASE__PORT}:5432"
+      - "${RAG__LANGFUSE__DATABASE__PORT}:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d ${RAGKB__LANGFUSE__DATABASE__NAME} -U ${RAGKB__LANGFUSE__DATABASE__USER}" ]
+      test: [ "CMD-SHELL", "pg_isready -d ${RAG__LANGFUSE__DATABASE__NAME} -U ${RAG__LANGFUSE__DATABASE__USER}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -84,11 +84,11 @@ services:
       langfuse-db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://${RAGKB__LANGFUSE__DATABASE__USER}:${RAGKB__LANGFUSE__DATABASE__PASSWORD}@langfuse-db:5432/${RAGKB__LANGFUSE__DATABASE__NAME}
+      DATABASE_URL: postgresql://${RAG__LANGFUSE__DATABASE__USER}:${RAG__LANGFUSE__DATABASE__PASSWORD}@langfuse-db:5432/${RAG__LANGFUSE__DATABASE__NAME}
       NEXTAUTH_URL: http://localhost:3000
-      PORT: ${RAGKB__LANGFUSE__PORT}
+      PORT: ${RAG__LANGFUSE__PORT}
       NEXTAUTH_SECRET: mysecret
       SALT: mysalt
     ports:
-      - "${RAGKB__LANGFUSE__PORT}:${RAGKB__LANGFUSE__PORT}"
+      - "${RAG__LANGFUSE__PORT}:${RAG__LANGFUSE__PORT}"
     restart: unless-stopped

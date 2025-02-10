@@ -16,22 +16,22 @@ Secrets are stored in the `env_vars/.env` file. Below is an example template:
 
 ```sh
 # Datasources
-RAGKB__DATASOURCES__NOTION__API_TOKEN=...
+RAG__DATASOURCES__NOTION__API_TOKEN=...
 
 # LLMs
-RAGKB__LLMS__OPEN_AI_LIKE__API_BASE=...
-RAGKB__LLMS__OPEN_AI_LIKE__API_KEY=...
+RAG__LLMS__OPEN_AI_LIKE__API_BASE=...
+RAG__LLMS__OPEN_AI_LIKE__API_KEY=...
 
 # Langfuse
-RAGKB__LANGFUSE__DATABASE__USER=user
-RAGKB__LANGFUSE__DATABASE__PASSWORD=password
+RAG__LANGFUSE__DATABASE__USER=user
+RAG__LANGFUSE__DATABASE__PASSWORD=password
 
-RAGKB__LANGFUSE__SECRET_KEY=...
-RAGKB__LANGFUSE__PUBLIC_KEY=...
+RAG__LANGFUSE__SECRET_KEY=...
+RAG__LANGFUSE__PUBLIC_KEY=...
 ```
 
-- `RAGKB__LLMS__OPEN_AI_LIKE__*`: Required for connecting to the LLM, accessible via `RAGKB__LLMS__OPEN_AI_LIKE__API_BASE` and `RAGKB__LLMS__OPEN_AI_LIKE__API_KEY`. The LLM uses [TabbyAPI](https://api-docs.tabby.ai/) and integrates through the [OpenAILike](https://docs.llamaindex.ai/en/stable/api_reference/llms/openai_like/) client.
-- **Langfuse Keys**: `RAGKB__LANGFUSE__SECRET_KEY` and `RAGKB__LANGFUSE__PUBLIC_KEY` are generated during initialization and will need to be updated later.
+- `RAG__LLMS__OPEN_AI_LIKE__*`: Required for connecting to the LLM, accessible via `RAG__LLMS__OPEN_AI_LIKE__API_BASE` and `RAG__LLMS__OPEN_AI_LIKE__API_KEY`. The LLM uses [TabbyAPI](https://api-docs.tabby.ai/) and integrates through the [OpenAILike](https://docs.llamaindex.ai/en/stable/api_reference/llms/openai_like/) client.
+- **Langfuse Keys**: `RAG__LANGFUSE__SECRET_KEY` and `RAG__LANGFUSE__PUBLIC_KEY` are generated during initialization and will need to be updated later.
 
 ### Adjustments for Local Development
 
@@ -99,8 +99,8 @@ Once initialized, access the Langfuse web server on your localhost (port defined
 Add the generated keys to the env_vars/.env file as follows:
 
 ```sh
-RAGKB__LANGFUSE__SECRET_KEY=<generated_secret_key>
-RAGKB__LANGFUSE__PUBLIC_KEY=<generated_public_key>
+RAG__LANGFUSE__SECRET_KEY=<generated_secret_key>
+RAG__LANGFUSE__PUBLIC_KEY=<generated_public_key>
 ```
 
 ## Development

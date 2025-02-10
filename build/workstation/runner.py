@@ -189,28 +189,28 @@ class CommandRunner:
         vector_store_configuration = (
             self.configuration.pipeline.embedding.vector_store
         )
-        os.environ["RAGKB__VECTOR_STORE__PORT_REST"] = str(
+        os.environ["RAG__VECTOR_STORE__PORT_REST"] = str(
             vector_store_configuration.ports.rest
         )
 
         langfuse_configuration = (
             self.configuration.pipeline.augmentation.langfuse
         )
-        os.environ["RAGKB__LANGFUSE__DATABASE__PORT"] = str(
+        os.environ["RAG__LANGFUSE__DATABASE__PORT"] = str(
             langfuse_configuration.database.port
         )
-        os.environ["RAGKB__LANGFUSE__DATABASE__NAME"] = (
+        os.environ["RAG__LANGFUSE__DATABASE__NAME"] = (
             langfuse_configuration.database.db
         )
-        os.environ["RAGKB__LANGFUSE__DATABASE__USER"] = (
+        os.environ["RAG__LANGFUSE__DATABASE__USER"] = (
             langfuse_configuration.database.secrets.user.get_secret_value()
         )
-        os.environ["RAGKB__LANGFUSE__DATABASE__PASSWORD"] = (
+        os.environ["RAG__LANGFUSE__DATABASE__PASSWORD"] = (
             langfuse_configuration.database.secrets.password.get_secret_value()
         )
-        os.environ["RAGKB__LANGFUSE__PORT"] = str(langfuse_configuration.port)
+        os.environ["RAG__LANGFUSE__PORT"] = str(langfuse_configuration.port)
 
-        os.environ["RAGKB__CHAINLIT__PORT"] = str(
+        os.environ["RAG__CHAINLIT__PORT"] = str(
             self.configuration.pipeline.augmentation.chainlit.port
         )
 

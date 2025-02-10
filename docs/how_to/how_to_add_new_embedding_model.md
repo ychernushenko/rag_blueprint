@@ -31,7 +31,7 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAGKB__EMBEDDING_MODELS__OPEN_AI__",
+        env_prefix="RAG__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",
         extra="ignore",
     )
@@ -41,14 +41,14 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
     )
 ```
 
-- `env_prefix`: Prefix for secrets, e.g., `RAGKB__EMBEDDING_MODELS__OPEN_AI__`.
-- **Environment Variable Naming**: To populate the api_key, use the variable `RAGKB__EMBEDDING_MODELS__OPEN_AI__API_KEY` in the environment file.
+- `env_prefix`: Prefix for secrets, e.g., `RAG__EMBEDDING_MODELS__OPEN_AI__`.
+- **Environment Variable Naming**: To populate the api_key, use the variable `RAG__EMBEDDING_MODELS__OPEN_AI__API_KEY` in the environment file.
 
 Example `.env` entry:
 
 ```sh
 ...
-RAGKB__EMBEDDING_MODELS__OPEN_AI__API_KEY=<openai_api_key>
+RAG__EMBEDDING_MODELS__OPEN_AI__API_KEY=<openai_api_key>
 ...
 ```
 
