@@ -17,20 +17,14 @@ from common.builders.embedding_builders import (
 
 
 # Enums
-class EmbeddingModelName(str, Enum):
-    BAAI_BGE_SMALL = "BAAI/bge-small-en-v1.5"
-    OPENAI_TEXT_EMBEDDING_3_SMALL = "text-embedding-3-small"
-    VOYAGE = "voyage-large-2-instruct"
-
-
-class EmbeddingModelTokenizerName(str, Enum):
-    BAAI_BGE_SMALL = "BAAI/bge-small-en-v1.5"
-    OPENAI_TEXT_EMBEDDING_3_SMALL = "text-embedding-3-small"
-    VOYAGE = "voyage-large-2-instruct"
+class EmbeddingModelProviderNames(str, Enum):
+    HUGGING_FACE = "hugging_face"
+    OPENAI = "openai"
+    VOYAGE = "voyage"
 
 
 # Secrets
-class BGESecrets(BaseSettings):
+class HuggingFaceSecrets(BaseSettings):
     pass
 
 
@@ -38,7 +32,7 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAG__EMBEDDING_MODELS__OPEN_AI__",
+        env_prefix="RAGKB__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",
         extra="ignore",
     )
@@ -52,7 +46,7 @@ class VoyageSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file="env_vars/.env",
         env_file_encoding="utf-8",
-        env_prefix="RAG__EMBEDDING_MODELS__VOYAGE__",
+        env_prefix="RAGKB__EMBEDDING_MODELS__VOYAGE__",
         env_nested_delimiter="__",
         extra="ignore",
     )
@@ -62,50 +56,15 @@ class VoyageSecrets(BaseSettings):
     )
 
 
-class EmbeddingModelSecretsMapping:
-
-    mapping: dict = {
-        EmbeddingModelName.BAAI_BGE_SMALL: BGESecrets,
-        EmbeddingModelName.OPENAI_TEXT_EMBEDDING_3_SMALL: OpenAIEmbeddingModelSecrets,
-        EmbeddingModelName.VOYAGE: VoyageSecrets,
-    }
-
-    @staticmethod
-    def get_secrets(embedding_model_name: EmbeddingModelName) -> BaseSettings:
-        secrets = EmbeddingModelSecretsMapping.mapping.get(
-            embedding_model_name
-        )()
-        if secrets is None:
-            raise ValueError(f"Secrets for {embedding_model_name} not found.")
-        return secrets
-
-
 # Configuration
-class EmbeddingModelTokenizerMapping:
-
-    @staticmethod
-    def get_tokenizer(
-        embedding_model_name: EmbeddingModelName,
-        tokenizer_name: EmbeddingModelTokenizerName,
-    ) -> Callable:
-        match embedding_model_name:
-            case EmbeddingModelName.BAAI_BGE_SMALL | EmbeddingModelName.VOYAGE:
-                return AutoTokenizer.from_pretrained(
-                    tokenizer_name.value
-                ).tokenize
-            case EmbeddingModelName.OPENAI_TEXT_EMBEDDING_3_SMALL:
-                return tiktoken.encoding_for_model(tokenizer_name.value).encode
-            case _:
-                raise ValueError(
-                    f"Tokenizer for {embedding_model_name} not found."
-                )
 
 
 class EmbeddingModelConfiguration(BaseModel):
-    name: EmbeddingModelName = Field(
-        ..., description="The name of the embedding model."
+    provider: EmbeddingModelProviderNames = Field(
+        ..., description="The provider of the embedding model."
     )
-    tokenizer_name: EmbeddingModelTokenizerName = Field(
+    name: str = Field(..., description="The name of the embedding model.")
+    tokenizer_name: str = Field(
         ...,
         description="The name of the tokenizer used by the embedding model.",
     )
@@ -121,21 +80,38 @@ class EmbeddingModelConfiguration(BaseModel):
     )
 
     def model_post_init(self, __context):
-        self.secrets = EmbeddingModelSecretsMapping.get_secrets(self.name)
-        self.tokenizer_func = EmbeddingModelTokenizerMapping.get_tokenizer(
-            self.name, self.tokenizer_name
-        )
+        self.secrets = self.get_secrets()
+        self.tokenizer_func = self.get_tokenizer()
+
+    def get_secrets(self) -> BaseSettings:
+        secrets_class = self.model_fields["secrets"].annotation
+        secrets = secrets_class()
+        if secrets is None:
+            raise ValueError(f"Secrets for {self.name} not found.")
+        return secrets
+
+    def get_tokenizer(self) -> Callable:
+        match self.provider:
+            case (
+                EmbeddingModelProviderNames.HUGGING_FACE
+                | EmbeddingModelProviderNames.VOYAGE
+            ):
+                return AutoTokenizer.from_pretrained(
+                    self.tokenizer_name
+                ).tokenize
+            case EmbeddingModelProviderNames.OPENAI:
+                return tiktoken.encoding_for_model(self.tokenizer_name).encode
+            case _:
+                raise ValueError(
+                    f"Tokenizer for `{self.provider}` provider not found."
+                )
 
 
-class BGEConfiguration(EmbeddingModelConfiguration):
-    name: Literal[EmbeddingModelName.BAAI_BGE_SMALL] = Field(
-        ..., description="The name of the embedding model."
+class HuggingFaceConfiguration(EmbeddingModelConfiguration):
+    provider: Literal[EmbeddingModelProviderNames.HUGGING_FACE] = Field(
+        ..., description="The provider of the embedding model."
     )
-    tokenizer_name: Literal[EmbeddingModelTokenizerName.BAAI_BGE_SMALL] = Field(
-        ...,
-        description="The name of the tokenizer used by the embedding model.",
-    )
-    secrets: Optional[BGESecrets] = Field(
+    secrets: HuggingFaceSecrets = Field(
         None, description="The secrets for the language model."
     )
 
@@ -148,20 +124,14 @@ class BGEConfiguration(EmbeddingModelConfiguration):
 
 class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
 
-    name: Literal[EmbeddingModelName.OPENAI_TEXT_EMBEDDING_3_SMALL] = Field(
-        ..., description="The name of the embedding model."
-    )
-    tokenizer_name: Literal[
-        EmbeddingModelTokenizerName.OPENAI_TEXT_EMBEDDING_3_SMALL
-    ] = Field(
-        ...,
-        description="The name of the tokenizer used by the embedding model.",
+    provider: Literal[EmbeddingModelProviderNames.OPENAI] = Field(
+        ..., description="The provider of the embedding model."
     )
     max_request_size_in_tokens: int = Field(
         8191,
         description="Maximum size of the request in tokens.",
     )
-    secrets: Optional[OpenAIEmbeddingModelSecrets] = Field(
+    secrets: OpenAIEmbeddingModelSecrets = Field(
         None, description="The secrets for the language model."
     )
 
@@ -171,10 +141,9 @@ class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
         exclude=True,
     )
 
-    @property
-    def batch_size(self) -> int:
-        "Size of the batch for embedding. Batch of strings to be embedded cannot exceed `max_request_size_in_tokens`."
-        return (
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
+        self.batch_size = (
             self.max_request_size_in_tokens
             // self.splitting.chunk_size_in_tokens
         )
@@ -182,14 +151,10 @@ class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
 
 class VoyageConfiguration(EmbeddingModelConfiguration):
 
-    name: Literal[EmbeddingModelName.VOYAGE] = Field(
-        ..., description="The name of the embedding model."
+    provider: Literal[EmbeddingModelProviderNames.VOYAGE] = Field(
+        ..., description="The provider of the embedding model."
     )
-    tokenizer_name: Literal[EmbeddingModelTokenizerName.VOYAGE] = Field(
-        ...,
-        description="The name of the tokenizer used by the embedding model.",
-    )
-    secrets: Optional[VoyageSecrets] = Field(
+    secrets: VoyageSecrets = Field(
         None, description="The secrets for the language model."
     )
 
@@ -201,5 +166,7 @@ class VoyageConfiguration(EmbeddingModelConfiguration):
 
 
 AVAILABLE_EMBEDDING_MODELS = Union[
-    OpenAIEmbeddingModelConfiguration, BGEConfiguration, VoyageConfiguration
+    OpenAIEmbeddingModelConfiguration,
+    HuggingFaceConfiguration,
+    VoyageConfiguration,
 ]
