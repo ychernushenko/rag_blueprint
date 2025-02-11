@@ -59,7 +59,7 @@ Otherwise, we would implement secrets as follows:
 ```py
 class ChromaSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__VECTOR_STORE__",
         env_nested_delimiter="__",

@@ -1,14 +1,13 @@
 {
     "metadata": {
-        "log_level": "info",
-        "environment": "local"
+        "log_level": "info"
     },
     "pipeline": {
         "embedding": {
             "datasources": [
                 {
                     "name": "notion",
-                    "export_limit": null,
+                    "export_limit": 100,
                     "home_page_database_id": "4c962a24-67d4-4b8d-9d25-b235ed46ae92"
                 }
             ],
@@ -25,7 +24,7 @@
             "vector_store": {
                 "name": "qdrant",
                 "collection_name": "ragkb-v11",
-                "host": "qdrant",
+                "host": "127.0.0.1",
                 "protocol": "http",
                 "ports": {
                     "rest": 6333
@@ -41,8 +40,8 @@
                 "synthesizer": {
                     "name": "tree",
                     "llm": {
-                        "provider": "openai-like",
-                        "name": "nemo",
+                        "provider": "openai",
+                        "name": "gpt-4o-mini",
                         "max_tokens": 1024,
                         "max_retries": 3,
                         "context_window": 16384
@@ -51,23 +50,23 @@
                 "postprocessors": []
             },
             "langfuse": {
-                "host": "langfuse",
+                "host": "127.0.0.1",
                 "protocol": "http",
-                "port": 3003,
+                "port": 3000,
                 "database": {
-                    "host": "langfuse-db",
-                    "port": 5532,
+                    "host": "127.0.0.1",
+                    "port": 5432,
                     "db": "langfuse"
                 }
             },
             "chainlit": {
-                "port": 8001
+                "port": 8000
             }
         },
         "evaluation": {
             "judge_llm": {
-                "provider": "openai-like",
-                "name": "nemo",
+                "provider": "openai",
+                "name": "gpt-4o-mini",
                 "max_tokens": 1024,
                 "max_retries": 3,
                 "context_window": 16384

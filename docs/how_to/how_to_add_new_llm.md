@@ -29,7 +29,7 @@ Next, define how secrets for the LLM are handled. For OpenAI, this includes an `
 ```py
 class OpenAILLMSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LLMS__OPENAI__",
         env_nested_delimiter="__",

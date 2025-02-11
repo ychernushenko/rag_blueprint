@@ -1,12 +1,16 @@
 import argparse
 import time
 from abc import ABC
+from typing import Tuple
 
 import chainlit.data as cl_data
 from injector import Binder, Injector, singleton
 
 from augmentation.chainlit.service import ChainlitService
 from common.bootstrap.configuration.configuration import Configuration
+from common.bootstrap.configuration.metadata.metadata_configuration import (
+    EnvironmentName,
+)
 from common.bootstrap.configuration.pipeline.augmentation.chainlit.chainlit_binder import (
     ChainlitBinder,
 )
@@ -50,16 +54,21 @@ class CommonInitializer(ABC):
         Setup the logger configuration.
         """
         args = self._parse_args()
-        configuration_filename = args.config_file
+        configuration_filepath, secrets_filepath = (
+            self._get_configuration_and_secrets_filepaths(args)
+        )
         build_name = args.build_name
+        environment = args.env
 
-        with open(configuration_filename) as f:
+        with open(configuration_filepath) as f:
             self.configuration_json = f.read()
         self.configuration = Configuration.model_validate_json(
-            self.configuration_json
+            self.configuration_json, context={"secrets_file": secrets_filepath}
         )
         self.configuration.metadata.build_name = build_name
-        print(f"::{configuration_filename}")
+        self.configuration.metadata.environment = EnvironmentName(environment)
+
+        print(f"::{configuration_filepath}")
         print(self.configuration.model_dump_json(indent=4))
 
         LoggerConfiguration.config()  # TODO: Pass log level from configuration
@@ -96,10 +105,10 @@ class CommonInitializer(ABC):
             description="Run the embedding process."
         )
         parser.add_argument(
-            "--config-file",
+            "--env",
             type=str,
-            help="Path to the configuration file.",
-            default="src/common/bootstrap/configuration/configuration.json",
+            help="Runtime environment.",
+            default="default",
         )
         parser.add_argument(
             "--build-name",
@@ -107,13 +116,23 @@ class CommonInitializer(ABC):
             help="The name of the build.",
             default=f"build-local-{time.time()}",  # Removed trailing comma
         )
-        parser.add_argument(
-            "--secrets-file",
-            type=str,
-            help="Path to the secrets file.",
-            default="env_vars/.env",
-        )
         return parser.parse_args()
+
+    def _get_configuration_and_secrets_filepaths(
+        self, args: argparse.Namespace
+    ) -> Tuple[str, str]:
+        """Get the configuration and secrets files from the command line arguments.
+
+        Args:
+            args: Parsed command line arguments
+
+        Returns:
+            Tuple[str, str]: Configuration and secrets filepaths
+        """
+
+        configuration_filepath = f"configurations/configuration.{args.env}.json"
+        secrets_filepath = f"configurations/secrets.{args.env}.env"
+        return configuration_filepath, secrets_filepath
 
 
 class EmbeddingInitializer(CommonInitializer):

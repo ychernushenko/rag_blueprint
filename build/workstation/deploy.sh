@@ -1,10 +1,15 @@
 #!/bin/bash
 
-# Setup deployment variables
-configuration_file="src/common/bootstrap/configuration/configuration.json"
-secrets_file="env_vars/.env"
-docker_compose_file="build/workstation/docker/docker-compose.yml"
+# Read environment name from command line arguments
+if [ "$1" = "--env" ] && [ -n "$2" ]; then
+    env="$2"
+    echo "Environment: $env"
+else
+    echo "Please provide the environment name as an argument. E.g. './init.sh --env dev'"
+    exit 1
+fi
 
+# Setup initialization variables
 current_epoch=$(date +%s)
 build_name="build-${current_epoch}"
 
@@ -34,9 +39,7 @@ echo "Running deployment script in the background. You can find live logs at ${l
 nohup python build/workstation/runner.py \
     --build-name $build_name \
     --log-file $log_file  \
-    --configuration-file $configuration_file \
-    --secrets-file $secrets_file \
-    --docker-compose-file $docker_compose_file \
+    --env $env \
     --deploy \
     > $log_file &
 

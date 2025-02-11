@@ -13,9 +13,10 @@ class LogLevelName(str, Enum):
 
 
 class EnvironmentName(str, Enum):
+    DEFAULT = "default"
     LOCAL = "local"
     DEV = "dev"
-    STAGING = "staging"
+    TEST = "test"
     PROD = "prod"
 
 

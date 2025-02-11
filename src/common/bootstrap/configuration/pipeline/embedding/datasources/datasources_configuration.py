@@ -1,8 +1,11 @@
+from abc import ABC
 from enum import Enum
 from typing import Literal, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, SecretStr
+from pydantic import ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
+
+from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 
 # Enums
 
@@ -18,7 +21,6 @@ class DatasourceName(str, Enum):
 
 class NotionSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__DATASOURCES__NOTION__",
         env_nested_delimiter="__",
@@ -32,7 +34,6 @@ class NotionSecrets(BaseSettings):
 
 class ConfluenceSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__DATASOURCES__CONFLUENCE__",
         env_nested_delimiter="__",
@@ -56,23 +57,13 @@ class PdfSecrets(BaseSettings):
 # Configuration
 
 
-class DatasourceConfiguration(BaseModel):
+class DatasourceConfiguration(ConfigurationWithSecrets, ABC):
     name: DatasourceName = Field(
         ..., description="The name of the data source."
     )
     export_limit: Optional[int] = Field(
         None, description="The export limit for the data source."
     )
-
-    def model_post_init(self, __context):
-        self.secrets = self.get_secrets()
-
-    def get_secrets(self) -> BaseSettings:
-        secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class()
-        if secrets is None:
-            raise ValueError(f"Secrets for {self.name} not found.")
-        return secrets
 
 
 class ConfluenceDatasourceConfiguration(DatasourceConfiguration):

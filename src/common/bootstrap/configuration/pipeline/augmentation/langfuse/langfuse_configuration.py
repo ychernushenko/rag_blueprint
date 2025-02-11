@@ -1,13 +1,15 @@
-from typing import Literal, Optional, Union
+from typing import Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
+
+from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 
 
 # Secrets
 class LangfuseSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LANGFUSE__",
         env_nested_delimiter="__",
@@ -24,7 +26,7 @@ class LangfuseSecrets(BaseSettings):
 
 class LangfuseDatabaseSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
+        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LANGFUSE__DATABASE__",
         env_nested_delimiter="__",
@@ -40,7 +42,7 @@ class LangfuseDatabaseSecrets(BaseSettings):
 
 
 # Configuration
-class LangfuseDatabaseConfiguration(BaseModel):
+class LangfuseDatabaseConfiguration(ConfigurationWithSecrets):
     host: str = Field(
         "127.0.0.1", description="Host of the Langfuse database server"
     )
@@ -52,15 +54,9 @@ class LangfuseDatabaseConfiguration(BaseModel):
         "langfuse",
         description="Name of the langfuse database server's database.",
     )
-    secrets: Optional[LangfuseDatabaseSecrets] = Field(
+    secrets: LangfuseDatabaseSecrets = Field(
         None, description="The secrets for the langfuse database."
     )
-
-    def model_post_init(self, __context):
-        secrets = LangfuseDatabaseSecrets()
-        if secrets is None:
-            raise ValueError("Secrets for Langfuse not found.")
-        self.secrets = secrets
 
 
 class LangfuseDatasetConfiguration(BaseModel):
@@ -94,7 +90,7 @@ class LangfuseDatasetsConfiguration(BaseModel):
     )
 
 
-class LangfuseConfiguration(BaseModel):
+class LangfuseConfiguration(ConfigurationWithSecrets):
     host: str = Field("127.0.0.1", description="Host of the Langfuse server")
     protocol: Union[Literal["http"], Literal["https"]] = Field(
         "http", description="The protocol for the vector store."
@@ -112,16 +108,10 @@ class LangfuseConfiguration(BaseModel):
         "chainlit_message_id: {message_id}",
         description="Format of the tag used to retrieve the trace by chainlit message id in langfuse",
     )
-    secrets: Optional[LangfuseSecrets] = Field(
+    secrets: LangfuseSecrets = Field(
         None, description="The secrets for the Langfuse."
     )
 
     @property
     def url(self) -> str:
         return f"{self.protocol}://{self.host}:{self.port}"
-
-    def model_post_init(self, __context):
-        secrets = LangfuseSecrets()
-        if secrets is None:
-            raise ValueError("Secrets for Langfuse not found.")
-        self.secrets = secrets

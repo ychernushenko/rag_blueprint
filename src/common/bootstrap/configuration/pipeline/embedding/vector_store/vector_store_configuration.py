@@ -1,8 +1,11 @@
+from abc import ABC
 from enum import Enum
 from typing import Literal, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings
+
+from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 
 
 # Enums
@@ -13,11 +16,17 @@ class VectorStoreName(str, Enum):
 
 # Secrets
 class QDrantSecrets(BaseSettings):
-    pass
+    # Placeholder to succeed secrets intialization
+    model_config = ConfigDict(
+        extra="ignore",
+    )
 
 
 class ChromaSecrets(BaseSettings):
-    pass
+    # Placeholder to succeed secrets intialization
+    model_config = ConfigDict(
+        extra="ignore",
+    )
 
 
 # Configuration
@@ -27,7 +36,7 @@ class VectorStorePortsConfiguration(BaseModel):
     )
 
 
-class VectorStoreConfiguration(BaseModel):
+class VectorStoreConfiguration(ConfigurationWithSecrets, ABC):
     name: VectorStoreName = Field(
         ..., description="The name of the vector store."
     )
@@ -43,16 +52,6 @@ class VectorStoreConfiguration(BaseModel):
     protocol: Union[Literal["http"], Literal["https"]] = Field(
         "http", description="The protocol for the vector store."
     )
-
-    def model_post_init(self, __context):
-        self.secrets = self.get_secrets()
-
-    def get_secrets(self) -> BaseSettings:
-        secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class()
-        if secrets is None:
-            raise ValueError(f"Secrets for {self.name} not found.")
-        return secrets
 
 
 class QDrantConfiguration(VectorStoreConfiguration):

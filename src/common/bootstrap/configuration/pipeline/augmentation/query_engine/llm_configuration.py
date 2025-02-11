@@ -1,10 +1,10 @@
-from abc import ABC
 from enum import Enum
 from typing import Callable, Literal, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, SecretStr
+from pydantic import ConfigDict, Field, SecretStr
 from pydantic_settings import BaseSettings
 
+from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 from common.builders.llm_builders import OpenAIBuilder, OpenAILikeBuilder
 
 
@@ -22,7 +22,6 @@ class LLMProviderNames(str, Enum):
 # Secrets
 class OpenAILLMSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LLMS__OPENAI__",
         env_nested_delimiter="__",
@@ -36,7 +35,6 @@ class OpenAILLMSecrets(BaseSettings):
 
 class OpenAILikeLLMSecrets(OpenAILLMSecrets):
     model_config = ConfigDict(
-        env_file="env_vars/.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LLMS__OPENAI_LIKE__",
         env_nested_delimiter="__",
@@ -51,7 +49,7 @@ class OpenAILikeLLMSecrets(OpenAILLMSecrets):
     )
 
 
-class LLMConfiguration(BaseModel, ABC):
+class LLMConfiguration(ConfigurationWithSecrets):
     name: str = Field(..., description="The name of the language model.")
     max_tokens: int = Field(
         ..., description="The maximum number of tokens for the language model."
@@ -59,16 +57,6 @@ class LLMConfiguration(BaseModel, ABC):
     max_retries: int = Field(
         ..., description="The maximum number of retries for the language model."
     )
-
-    def model_post_init(self, __context):
-        self.secrets = self.get_secrets()
-
-    def get_secrets(self) -> Union[OpenAILLMSecrets, OpenAILikeLLMSecrets]:
-        secrets_class = self.model_fields["secrets"].annotation
-        secrets = secrets_class()
-        if secrets is None:
-            raise ValueError(f"Secrets for {self.name} not found.")
-        return secrets
 
 
 # Configuration
