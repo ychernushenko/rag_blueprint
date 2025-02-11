@@ -24,7 +24,7 @@
             "vector_store": {
                 "name": "qdrant",
                 "collection_name": "ragkb-v11",
-                "host": "qdrant",
+                "host": "127.0.0.1",
                 "protocol": "http",
                 "ports": {
                     "rest": 6333
@@ -50,11 +50,11 @@
                 "postprocessors": []
             },
             "langfuse": {
-                "host": "langfuse",
+                "host": "127.0.0.1",
                 "protocol": "http",
                 "port": 3003,
                 "database": {
-                    "host": "langfuse-db",
+                    "host": "127.0.0.1",
                     "port": 5532,
                     "db": "langfuse"
                 }
