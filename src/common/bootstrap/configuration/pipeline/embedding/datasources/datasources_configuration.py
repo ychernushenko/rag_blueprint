@@ -51,7 +51,9 @@ class ConfluenceSecrets(BaseSettings):
 
 
 class PdfSecrets(BaseSettings):
-    pass
+    model_config = ConfigDict(
+        extra="ignore",
+    )
 
 
 # Configuration

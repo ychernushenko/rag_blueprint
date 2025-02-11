@@ -23,7 +23,7 @@
             },
             "vector_store": {
                 "name": "qdrant",
-                "collection_name": "ragkb-v11",
+                "collection_name": "collection-default",
                 "host": "qdrant",
                 "protocol": "http",
                 "ports": {
