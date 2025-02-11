@@ -4,10 +4,10 @@
 **/.chainlit/**
 **/.files/**
 **/.docker-data/**
-configuration/**.env
-env_vars/.env.old
 build/**/logs
 **/.DS_Store
 .pytest_cache
 .ruff_cache
-.secrets
+configurations/*
+!configurations/configuration.default.json
+!configurations/configuration.local.json
