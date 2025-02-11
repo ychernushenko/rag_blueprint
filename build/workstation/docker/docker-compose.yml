@@ -13,8 +13,7 @@ services:
       dockerfile: build/workstation/docker/Dockerfile.embed
       args:
         BUILD_NAME: "default-build-name"
-        CONFIGURATION_FILE: "src/common/bootstrap/configuration/configuration.json"
-        SECRETS_FILE: "env_vars/.env"
+        ENV: "default"
 
   chat:
     build:
@@ -22,8 +21,7 @@ services:
       dockerfile: build/workstation/docker/Dockerfile.chat
       args:
         BUILD_NAME: "default-build-name"
-        CONFIGURATION_FILE: "src/common/bootstrap/configuration/configuration.json"
-        SECRETS_FILE: "env_vars/.env"
+        ENV: "default"
         CHAINLIT_PORT: "${RAG__CHAINLIT__PORT}"
     ports:
       -  "${RAG__CHAINLIT__PORT}:${RAG__CHAINLIT__PORT}"
@@ -35,8 +33,7 @@ services:
       dockerfile: build/workstation/docker/Dockerfile.evaluate
       args:
         BUILD_NAME: "default-build-name"
-        CONFIGURATION_FILE: "src/common/bootstrap/configuration/configuration.json"
-        SECRETS_FILE: "env_vars/.env"
+        ENV: "default"
 
   # Base services
   qdrant:

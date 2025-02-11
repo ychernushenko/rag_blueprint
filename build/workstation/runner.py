@@ -1,4 +1,5 @@
 import sys
+from typing import Tuple
 
 sys.path.append("./src")
 
@@ -64,20 +65,15 @@ class CommandRunner:
     Attributes:
         logger: Logger for the deployment
         build_name: The name of the build to deploy
-        secrets_filename: The file containing the secrets
-        configuration_filename: The file containing the configuration
+        environment: Name of runtime environment
         docker_compose_filename: The file containing the docker-compose configuration
-        docker_client: Docker client for running the services
-        configuration_json: The JSON configuration
-        configuration: Pydantic model of configuration
     """
 
     def __init__(
         self,
         logger: Logger,
         build_name: str,
-        secrets_filename: str,
-        configuration_filename: str,
+        environment: str,
         docker_compose_filename: str,
     ):
         """Initialize the command runner.
@@ -85,15 +81,16 @@ class CommandRunner:
         Args:
             logger: Logger for the deployment
             build_name: The name of the build to deploy
-            secrets_filename: The file containing the secrets
-            configuration_filename: The file containing the configuration
+            environment: Name of runtime environment
             docker_compose_filename: The file containing the docker-compose configuration
         """
         self.logger = logger
         self.build_name = build_name
-        self.secrets_filename = secrets_filename
-        self.configuration_filename = configuration_filename
+        self.environment = environment
         self.docker_compose_filename = docker_compose_filename
+        self.configuration_filename, self.secrets_filename = (
+            self._get_configuration_and_secrets_filepaths(environment)
+        )
 
         self.docker_client = DockerClient(
             compose_files=[docker_compose_filename],
@@ -105,7 +102,8 @@ class CommandRunner:
         with open(self.configuration_filename) as f:
             self.configuration_json = f.read()
         self.configuration = Configuration.model_validate_json(
-            self.configuration_json
+            self.configuration_json,
+            context={"secrets_file": self.secrets_filename},
         )
         print(f"::{self.configuration_filename}")
         print(self.configuration.model_dump_json(indent=4))
@@ -151,8 +149,7 @@ class CommandRunner:
                     services=[service_name],
                     build_args={
                         "BUILD_NAME": self.build_name,
-                        "CONFIGURATION_FILENAME": self.configuration_filename,
-                        "SECRETS_FILENAME": self.secrets_filename,
+                        "ENV": self.environment,
                     },
                 )
 
@@ -179,6 +176,24 @@ class CommandRunner:
         """
         self.logger.write("Cleaning up Docker resources")
         self.docker_client.system.prune(all=True, volumes=True)
+
+    def _get_configuration_and_secrets_filepaths(
+        self, environment: str
+    ) -> Tuple[str, str]:
+        """Get the configuration and secrets files from the command line arguments.
+
+        Args:
+            args: Parsed command line arguments
+
+        Returns:
+            Tuple[str, str]: Configuration and secrets filepaths
+        """
+
+        configuration_filepath = (
+            f"configurations/configuration.{environment}.json"
+        )
+        secrets_filepath = f"configurations/secrets.{environment}.env"
+        return configuration_filepath, secrets_filepath
 
     def _export_port_configuration(self):
         """Export the port configuration.
@@ -401,19 +416,9 @@ def arg_parser() -> Namespace:
         help="The file to log the deployment output",
     )
     parser.add_argument(
-        "--secrets-file",
+        "--env",
         type=str,
-        help="The file containing the secrets",
-    )
-    parser.add_argument(
-        "--configuration-file",
-        type=str,
-        help="The file containing the configuration",
-    )
-    parser.add_argument(
-        "--docker-compose-file",
-        type=str,
-        help="The file containing the docker-compose configuration used for setting up the services",
+        help="Name of the runtime environment",
     )
     return parser.parse_args()
 
@@ -465,9 +470,8 @@ def main():
     command_runner = CommandRunner(
         logger=logger,
         build_name=args.build_name,
-        secrets_filename=args.secrets_file,
-        configuration_filename=args.configuration_file,
-        docker_compose_filename=args.docker_compose_file,
+        environment=args.env,
+        docker_compose_filename="build/workstation/docker/docker-compose.yml",
     )
 
     if args.init:

@@ -1,13 +1,11 @@
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 ARG BUILD_NAME
-ARG CONFIGURATION_FILE
-ARG SECRETS_FILE
+arg ENV
 ARG CHAINLIT_PORT
 
 ENV BUILD_NAME=${BUILD_NAME}
-ENV CONFIGURATION_FILE=${CONFIGURATION_FILE}
-ENV SECRETS_FILE=${SECRETS_FILE}
+ENV ENV=${ENV}
 ENV CHAINLIT_PORT=${CHAINLIT_PORT}
 ENV CHAINLIT_HOST=0.0.0.0
 ENV UV_SYSTEM_PYTHON=1
@@ -19,4 +17,4 @@ RUN --mount=type=cache,target=/root/.cache \
 
 ENV TOKENIZERS_PARALLELISM=false
 
-CMD uv run python src/chat.py --build-name ${BUILD_NAME} --config-file ${CONFIGURATION_FILE} --secrets-file ${SECRETS_FILE}
+CMD uv run python src/chat.py --build-name ${BUILD_NAME} --env ${ENV}
