@@ -43,5 +43,5 @@ nohup python build/workstation/runner.py \
     --init \
     > $log_file &
 
-# nohup_pid=$!
-# echo "Process ID: $nohup_pid"
+nohup_pid=$!
+echo "Process ID: $nohup_pid"
