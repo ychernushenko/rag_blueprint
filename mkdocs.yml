@@ -21,6 +21,7 @@ nav:
     - Utils: src/augmentation/utils.md
   - Common:
     - Bootstrap:
+      - Secrets_configuration: src/common/bootstrap/secrets_configuration.md
       - Initializer: src/common/bootstrap/initializer.md
       - Configuration:
         - Pipeline:
