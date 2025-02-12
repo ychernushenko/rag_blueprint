@@ -204,6 +204,11 @@ def update_mkdocs_yml(nav_structure):
             ]
         },
         {
+            "Monitoring": [
+                {"In progress": "monitoring/in_progress.md"},
+            ]
+        },
+        {
             "Code Docs": [
                 {"Chat": "src/chat.md"},
                 {"Embed": "src/embed.md"},
