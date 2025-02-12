@@ -14,7 +14,7 @@ llama-index-llms-openai==0.2.16
 
 ## Define the LLM Provider
 
-LLM configurations in *llm_configuration.py* are scoped by provider. Each provider, such as [OpenAI](https://openai.com/), , requires its own Pydantic configuration class. Begin by assigning a meaningful name to the new provider in the `LLMProviderNames` enumeration:
+LLM configurations in [llm_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py) are scoped by provider. Each provider, such as [OpenAI](https://openai.com/), , requires its own Pydantic configuration class. Begin by assigning a meaningful name to the new provider in the `LLMProviderNames` enumeration:
 
 ```py
 class LLMProviderNames(str, Enum):
@@ -24,12 +24,11 @@ class LLMProviderNames(str, Enum):
 
 ## Configure LLM Secrets
 
-Next, define how secrets for the LLM are handled. For OpenAI, this includes an `api_key`. Create a secrets class that retrieves these values from environment variables (e.g., from  `env_vars/.env` or a user-specified file):
+Next, define how secrets for the LLM are handled. For OpenAI, this includes an `api_key`. Create a secrets class that retrieves these values from environments secrets file:
 
 ```py
 class OpenAILLMSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LLMS__OPENAI__",
         env_nested_delimiter="__",
@@ -44,7 +43,7 @@ class OpenAILLMSecrets(BaseSettings):
 - `env_prefix`: Prefix for secrets, e.g., `RAG__LLMS__OPENAI__`.
 - **Environment Variable Naming**: To populate the api_key, use the variable `RAG__LLMS__OPENAI__API_KEY` in the environment file.
 
-Example `.env` entry:
+Example `configurations/secrets.{environment}.env` entry:
 
 ```sh
 ...

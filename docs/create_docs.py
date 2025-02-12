@@ -182,7 +182,7 @@ def update_mkdocs_yml(nav_structure):
         {
             "Quickstart": [
                 {"Quickstart Setup": "quickstart/quickstart_setup.md"},
-                {"Developer Setup": "quickstart/developer_setup.md"},
+                {"Local Developement Setup": "quickstart/developer_setup.md"},
             ]
         },
         {

@@ -24,12 +24,11 @@ class EmbeddingModelProviderNames(str, Enum):
 
 ## Configure Embedding Model Secrets
 
-Next, define how secrets for the embedding model are handled. For OpenAI, this includes an `api_key`. Create a secrets class that retrieves these values from environment variables (e.g., from  `env_vars/.env` or a user-specified file):
+Next, define how secrets for the embedding model are handled. For OpenAI, this includes an `api_key`. Create a secrets class that retrieves these values from environments secrets file:
 
 ```py
 class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",
@@ -42,9 +41,9 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
 ```
 
 - `env_prefix`: Prefix for secrets, e.g., `RAG__EMBEDDING_MODELS__OPEN_AI__`.
-- **Environment Variable Naming**: To populate the api_key, use the variable `RAG__EMBEDDING_MODELS__OPEN_AI__API_KEY` in the environment file.
+- **Environment Variable Naming**: To populate the api_key, use the variable `RAG__EMBEDDING_MODELS__OPEN_AI__API_KEY` in the environment's secret file.
 
-Example `.env` entry:
+Example `configurations/secrets.{environment}.env` entry:
 
 ```sh
 ...
@@ -92,7 +91,7 @@ class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
 
 `builder`: Specifies a callable (e.g., `OpenAIEmbeddingModelBuilder.build`) responsible for initializing the embedding instance.
 
-**_Note_**: Because of OpenAI's API nature, we need to calculate the `batch_size` based on the fields from `configuration.json`, it is done in `model_post_init`.
+**_Note_**: Because of OpenAI's API nature, we need to calculate the `batch_size` based on the fields from configuration, which is done in `model_post_init`.
 
 ## Setup Tokenizer Initizalization
 

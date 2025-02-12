@@ -51,7 +51,9 @@ Next, define how secrets for the vector store are handled. In our case chroma do
 
 ```py
 class ChromaSecrets(BaseSettings):
-    pass
+    model_config = ConfigDict(
+        extra="ignore",
+    )
 ```
 
 Otherwise, we would implement secrets as follows:
@@ -59,7 +61,6 @@ Otherwise, we would implement secrets as follows:
 ```py
 class ChromaSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__VECTOR_STORE__",
         env_nested_delimiter="__",
@@ -74,7 +75,7 @@ class ChromaSecrets(BaseSettings):
     )
 ```
 
-Secrets would be read from secrets file (`env_vars/.env`) and further used for client initialization.
+Secrets would be read from environment's secrets file (`configurations/secrets.{environment}.env`) and further used for client initialization.
 
 ## Implement the Vector Store Configuration
 
@@ -397,4 +398,4 @@ class VectorStoreBinder(BaseBinder):
     ...
 ```
 
-It ensures us that all instances that we defined through this guide are successfully initialized during the bootstrap and ready to use. From this point Chroma database is available for use through [`configuration.json](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/configuration.json )
+It ensures us that all instances that we defined through this guide are successfully initialized during the bootstrap and ready to use. From this point Chroma database is available for use in the pipeline.
