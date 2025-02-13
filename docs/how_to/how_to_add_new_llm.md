@@ -1,10 +1,10 @@
-# How To Add New LLM Implementation
+# How to Add a New LLM Implementation
 
-This guide outlines the process of adding support for a new language model (LLM) implementation. We use the existing `OpenAILLMConfiguration` as an example, located in [llm_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py) file.
+This guide demonstrates how to add support for a new Language Model (LLM) implementation, using OpenAI as an example. The implementation is defined in [llm_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py).
 
-## Update Project Dependencies
+## Step 1: Add Dependencies
 
-Since we will use [OpenAI](https://openai.com/)'s LLM through [llamaindex](https://docs.llamaindex.ai/en/stable/) implementation add correspodning entry to `pyproject.toml`:
+Add the required packages to `pyproject.toml`:
 
 ```toml
 ...
@@ -12,9 +12,9 @@ llama-index-llms-openai==0.2.16
 ...
 ```
 
-## Define the LLM Provider
+## Step 2: Define the LLM Provider
 
-LLM configurations in [llm_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py) are scoped by provider. Each provider, such as [OpenAI](https://openai.com/), , requires its own Pydantic configuration class. Begin by assigning a meaningful name to the new provider in the `LLMProviderNames` enumeration:
+LLM configurations in [llm_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/augmentation/query_engine/llm_configuration.py) are scoped by provider. Each provider, such as [OpenAI](https://openai.com/), requires its own Pydantic configuration class. Begin by assigning a meaningful name to the new provider in the `LLMProviderNames` enumeration:
 
 ```py
 class LLMProviderNames(str, Enum):
@@ -22,7 +22,7 @@ class LLMProviderNames(str, Enum):
     OPENAI = "openai"
 ```
 
-## Configure LLM Secrets
+## Step 3: Configure LLM Secrets
 
 Next, define how secrets for the LLM are handled. For OpenAI, this includes an `api_key`. Create a secrets class that retrieves these values from environments secrets file:
 
@@ -51,7 +51,7 @@ RAG__LLMS__OPENAI__API_KEY=<openai_api_key>
 ...
 ```
 
-## Implement the LLM Configuration
+## Step 4: Implement the LLM Configuration
 
 Define the main configuration class for the LLM, extending the base `LLMConfiguration`:
 
@@ -101,7 +101,7 @@ Add configuration to `AVAILABLE_LLMS` static
 - `max_retries`: Defines the retry policy for API calls.
 
 
-## Expose LLM Configuration
+## Step 5: Expose LLM Configuration
 
 To make pydantic parse corresponding json object to our `OpenAILLMConfiguration` we need to add it to `AVAILABLE_LLMS` variable:
 
@@ -109,9 +109,7 @@ To make pydantic parse corresponding json object to our `OpenAILLMConfiguration`
 AVAILABLE_LLMS = Union[..., OpenAILLMConfiguration]
 ```
 
-
-
-## Create the LLM Builder
+## Step 6: Create the LLM Builder
 
 The builder is responsible for initializing the LLM. Our implementation leverages [llamaindex](https://docs.llamaindex.ai/en/stable/), to add the builder logic to [llm_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/llm_builders.py) we add necessary builder.
 

@@ -1,6 +1,6 @@
 # Quickstart Setup
 
-This guide outlines the steps to set up and deploy the RAG system on your desired server or local machine.
+This guide outlines the steps to set up and deploy the RAG system on your server or local machine.
 
 Requirements:
 
@@ -12,7 +12,7 @@ Requirements:
 The default configuration is located in [configuration.default.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.default.json). This file configures Notion as the document datasource and defines default settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration guide [Docs in Progress].
 
 ### Secrets Configuration
-You have to create secrets file at `configurations/secrets.default.env` file. Below is a template:
+Create a secrets file at `configurations/secrets.default.env`. Below is a template:
 
 ```sh
 # Datasources
@@ -38,7 +38,7 @@ RAG__LANGFUSE__PUBLIC_KEY=...
 
 ### Python Environment
 
-1. Install uv on you OS following this [installation](https://docs.astral.sh/uv/getting-started/installation/) guide.
+1. Install uv on your OS following this [installation](https://docs.astral.sh/uv/getting-started/installation/) guide.
 
 2. In the root of the project, create a virtual environment and activate it:
 
