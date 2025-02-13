@@ -182,7 +182,7 @@ def update_mkdocs_yml(nav_structure):
         {
             "Quickstart": [
                 {"Quickstart Setup": "quickstart/quickstart_setup.md"},
-                {"Developer Setup": "quickstart/developer_setup.md"},
+                {"Local Developement Setup": "quickstart/developer_setup.md"},
             ]
         },
         {
@@ -196,6 +196,16 @@ def update_mkdocs_yml(nav_structure):
                     "Add a New Vector Store": "how_to/how_to_add_new_vector_store.md"
                 },
                 {"Add a New Datasource": "how_to/how_to_add_new_datasource.md"},
+            ]
+        },
+        {
+            "Evaluation": [
+                {"In progress": "evaluation/in_progress.md"},
+            ]
+        },
+        {
+            "Monitoring": [
+                {"In progress": "monitoring/in_progress.md"},
             ]
         },
         {

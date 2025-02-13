@@ -1,10 +1,10 @@
-# How To Add New Embedding Model Implementation
+# How to Add a New Embedding Model Implementation
 
-This guide outlines the process of adding support for a new embedding model implementation. We use the existing `OpenAIEmbeddingModelConfiguration` as an example, located in [embedding_model_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_configuration.py) file.
+This guide demonstrates how to add support for a new embedding model implementation, using OpenAI as an example. The implementation is defined in [embedding_model_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/embedding_model/embedding_model_configuration.py).
 
-## Update Project Dependencies
+## Step 1: Add Dependencies
 
-Since we will use [OpenAI](https://openai.com/)'s embedding models through [llamaindex](https://docs.llamaindex.ai/en/stable/) implementation add correspodning entry to `pyproject.toml`:
+Add the required packages to `pyproject.toml`:
 
 ```toml
 ...
@@ -12,9 +12,9 @@ llama-index-embeddings-openai=0.2.4
 ...
 ```
 
-## Define the Embedding Model Provider
+## Step 2: Define the Embedding Model Provider
 
-Embedding model configurations in *embedding_model_configuration.py* are scoped by provider. Each provider, such as OpenAI, requires its own Pydantic configuration class. Begin by assigning a meaningful name to the new provider in the `EmbeddingModelProviderNames` enumeration:
+In *embedding_model_configuration.py*, add the new provider to the `EmbeddingModelProviderNames` enumeration:
 
 ```py
 class EmbeddingModelProviderNames(str, Enum):
@@ -22,14 +22,13 @@ class EmbeddingModelProviderNames(str, Enum):
     OPENAI = "openai"
 ```
 
-## Configure Embedding Model Secrets
+## Step 3: Configure Embedding Model Secrets
 
-Next, define how secrets for the embedding model are handled. For OpenAI, this includes an `api_key`. Create a secrets class that retrieves these values from environment variables (e.g., from  `env_vars/.env` or a user-specified file):
+Create a secrets class for the new provider:
 
 ```py
 class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__EMBEDDING_MODELS__OPEN_AI__",
         env_nested_delimiter="__",
@@ -41,10 +40,7 @@ class OpenAIEmbeddingModelSecrets(BaseSettings):
     )
 ```
 
-- `env_prefix`: Prefix for secrets, e.g., `RAG__EMBEDDING_MODELS__OPEN_AI__`.
-- **Environment Variable Naming**: To populate the api_key, use the variable `RAG__EMBEDDING_MODELS__OPEN_AI__API_KEY` in the environment file.
-
-Example `.env` entry:
+Add the corresponding environment variable to `configurations/secrets.{environment}.env`:
 
 ```sh
 ...
@@ -52,9 +48,9 @@ RAG__EMBEDDING_MODELS__OPEN_AI__API_KEY=<openai_api_key>
 ...
 ```
 
-## Implement the Embedding Model Configuration
+## Step 4: Implement the Embedding Model Configuration
 
-Define the main configuration class for the embedding model, extending the base `EmbeddingModelConfiguration`:
+Define the configuration class for the new provider:
 
 ```py
 class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
@@ -84,37 +80,24 @@ class OpenAIEmbeddingModelConfiguration(EmbeddingModelConfiguration):
         )
 ```
 
-`provider`: Constrained to the openai value, ensuring only configurations matching `EmbeddingModelProviderNames.OPENAI` are valid.
+## Step 5: Setup Tokenizer Initialization
 
-`max_request_size_in_tokens`: Maximum number of tokens being embeded in a single request by specified embedding model. For details visit OpenAI's documentation.
-
-`secrets`: Links the configuration to the `OpenAIEmbeddingModelSecrets` class.
-
-`builder`: Specifies a callable (e.g., `OpenAIEmbeddingModelBuilder.build`) responsible for initializing the embedding instance.
-
-**_Note_**: Because of OpenAI's API nature, we need to calculate the `batch_size` based on the fields from `configuration.json`, it is done in `model_post_init`.
-
-## Setup Tokenizer Initizalization
-
-Each tokenizer corresponds to a specific embedding model. To standardize this, the base class `EmbeddingModelConfiguration` defines the tokenizer_name field, which is required by all subclass implementations, such as `OpenAIEmbeddingModelConfiguration`. Since no single package universally supports initializing all tokenizers, the appropriate encoding function must be specified within the `get_tokenizer` method of `EmbeddingModelConfiguration.`
-
-For the OpenAI embedding models, the `tiktoken` package provides the tokenizer implementation. As a result, the `get_tokenizer` method is customized for OpenAI embeddings to utilize tiktoken for tokenization. This ensures compatibility and consistency in encoding logic across the implementation.
+Customize the `get_tokenizer` method in `EmbeddingModelConfiguration`:
 
 ```py
-    import tiktoken
+import tiktoken
+...
+class EmbeddingModelConfiguration(BaseModel):
     ...
-    class EmbeddingModelConfiguration(BaseModel):
-        ...
-        def get_tokenizer(self) -> Callable:
-            match self.provider:
-                ...
-                case EmbeddingModelProviderNames.OPENAI:
-                    return tiktoken.encoding_for_model(self.tokenizer_name).encode
-                ...
+    def get_tokenizer(self) -> Callable:
+        match self.provider:
+            ...
+            case EmbeddingModelProviderNames.OPENAI:
+                return tiktoken.encoding_for_model(self.tokenizer_name).encode
+            ...
 ```
 
-
-**Example JSON Configuration**
+## Step 6: Example JSON Configuration
 
 ```json
 ...
@@ -131,26 +114,17 @@ For the OpenAI embedding models, the `tiktoken` package provides the tokenizer i
 ...
 ```
 
-- `provider`: Matches the provider defined in `EmbeddingModelProviderNames`.
+## Step 7: Expose Embedding Model Configuration
 
-- `name`: Specifies the embedding model (e.g., `text-embedding-3-small`).
-
-- `tokenizer_name`: Sets the tokenizer used in the pipeline.
-
-- `splitting`: Defines the splitting strategy.
-
-
-## Expose Embedding Model Configuration
-
-To make pydantic parse corresponding json object to our `OpenAIEmbeddingModelConfiguration` we need to add it to `AVAILABLE_EMBEDDING_MODELS` variable:
+Add the new configuration to `AVAILABLE_EMBEDDING_MODELS`:
 
 ```py
 AVAILABLE_EMBEDDING_MODELS = Union[..., OpenAIEmbeddingModelConfiguration]
 ```
 
-## Create the Embedding Model Builder
+## Step 8: Create the Embedding Model Builder
 
-The builder is responsible for initializing the Embedding Model. Our implementation leverages llamaindex, to add the builder logic to [embedding_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/embedding_builders.py) we add necessary builder.
+Add the builder logic to [embedding_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/embedding_builders.py):
 
 ```py
 from typing import TYPE_CHECKING
@@ -190,12 +164,4 @@ class OpenAIEmbeddingModelBuilder:
         )
 ```
 
-**Explanation**:
-
-- **Dependencies**: Use dependency injection (@inject) to ensure proper initialization.
-
-- **Configuration** Use: Extracts `api_key`, `model_name`, and `embed_batch_size` from the `OpenAIEmbeddingModelConfiguration`.
-
-- **Library Integration**: Uses `llama_index.embeddings.openai.OpenAIEmbedding` to create the embedding model instance.
-
-After all these steps, OpenAI embedding models are ready to be configured and used in RAG System.
+After completing these steps, the OpenAI embedding models are ready to be configured and used in the RAG System.

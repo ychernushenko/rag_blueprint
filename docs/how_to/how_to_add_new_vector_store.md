@@ -1,10 +1,10 @@
-# How To Add New Vector Store Implementation
+# How to Add a New Vector Store Implementation
 
-This guide outlines the process of adding support for a new vector store implementation. We use the existing `Chroma` as an example, located in [vector_store_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/vector_store/vector_store_configuration.py) file.
+This guide demonstrates how to add support for a new vector store implementation, using `Chroma` as an example. The implementation is defined in [vector_store_configuration.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/vector_store/vector_store_configuration.py).
 
-## Update Project Dependencies
+## Step 1: Add Dependencies
 
-Since we will use [Chroma](https://www.trychroma.com/) vector store through [llamaindex](https://docs.llamaindex.ai/en/stable/) implementation add correspodning entries to `pyproject.toml`:
+Add the required packages to `pyproject.toml`:
 
 ```toml
 ...
@@ -13,9 +13,9 @@ llama-index-vector-stores-chroma==0.3.0
 ...
 ```
 
-## Docker Configuration
+## Step 2: Configure Docker Service
 
-In order to include it in the intialization script chroma has to be added to [docker-compose.yml](https://github.com/feld-m/rag_blueprint/blob/main/build/workstation/docker/docker-compose.yml):
+Add the vector store service to [docker-compose.yml](https://github.com/feld-m/rag_blueprint/blob/main/build/workstation/docker/docker-compose.yml):
 
 ```yml
 name: rag
@@ -33,9 +33,9 @@ services:
 ...
 ```
 
-## Define Vector Store Enum Name
+## Step 3: Define Vector Store Type
 
-Vector store name has to be added to `VectorStoreName` enum from `vector_store_configuration.py` as follows:
+Add the vector store to the `VectorStoreName` enum in `vector_store_configuration.py`:
 
 ```py
 class VectorStoreName(str, Enum):
@@ -43,23 +43,24 @@ class VectorStoreName(str, Enum):
     CHROMA = "chroma"
 ```
 
-String value has to correspond to the name in docker configuration.
+The enum value must match the service name in the Docker configuration.
 
-## Configure Vector Store Secrets
+## Step 4: Configure Secrets Management
 
-Next, define how secrets for the vector store are handled. In our case chroma does not require any secrets therefore we define it as follows:
-
-```py
-class ChromaSecrets(BaseSettings):
-    pass
-```
-
-Otherwise, we would implement secrets as follows:
+Define a secrets configuration class. For services without secrets:
 
 ```py
 class ChromaSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
+        extra="ignore",
+    )
+```
+
+For services requiring secrets:
+
+```py
+class ChromaSecrets(BaseSettings):
+    model_config = ConfigDict(
         env_file_encoding="utf-8",
         env_prefix="RAG__VECTOR_STORE__",
         env_nested_delimiter="__",
@@ -74,9 +75,9 @@ class ChromaSecrets(BaseSettings):
     )
 ```
 
-Secrets would be read from secrets file (`env_vars/.env`) and further used for client initialization.
+Secrets are read from `configurations/secrets.{environment}.env` during client initialization.
 
-## Implement the Vector Store Configuration
+## Step 5: Implement the Vector Store Configuration
 
 Define the Chroma configuration class for the LLM, extending the base `ChromaConfiguration`:
 
@@ -90,11 +91,10 @@ class ChromaConfiguration(VectorStoreConfiguration):
     )
 ```
 
-Which already includes the fields from `VectorStoreConfiguration`, plus these defined in the snippet.
+This class includes fields from `VectorStoreConfiguration`, plus the ones defined in the snippet.
 
-`name` Constrained to the Chroma value, ensuring only configurations matching VectorStoreName.Chroma are valid.
-
-`secrets`: Links the configuration to the ChromaSecrets class.
+- `name`: Constrained to the Chroma value, ensuring only configurations matching `VectorStoreName.CHROMA` are valid.
+- `secrets`: Links the configuration to the `ChromaSecrets` class.
 
 **Example JSON Configuration**
 
@@ -103,7 +103,7 @@ Which already includes the fields from `VectorStoreConfiguration`, plus these de
     "vector_store": {
         "name": "chroma",
         "collection_name": "new-collection",
-        "host": "chroma",                   // replace with valid host e.g. 127.0.0.1
+        "host": "chroma",
         "protocol": "http",
         "ports": {
             "rest": 6333
@@ -112,28 +112,23 @@ Which already includes the fields from `VectorStoreConfiguration`, plus these de
 ...
 ```
 
-`chroma` Name of the vector store to be used, corresponds to the vector store name from [docker-compose.yml](https://github.com/feld-m/rag_blueprint/blob/main/build/workstation/docker/docker-compose.yml).
+- `name`: Name of the vector store to be used, corresponds to the vector store name from [docker-compose.yml](https://github.com/feld-m/rag_blueprint/blob/main/build/workstation/docker/docker-compose.yml).
+- `collection_name`: Name of the collection to which documents will be embedded.
+- `host`: Vector store host in the form of IP or domain e.g. 127.0.0.1.
+- `protocol`: Used for creating URL in combination with `host`.
+- `ports`: Ports on which the vector store is available. Used for creating URL in combination with `protocol` and `host`.
 
-`collection_name` Name of the collection to which documents will be embedded.
+## Step 6: Expose LLM Configuration
 
-`host` Vector store host in the form of ip or domain e.g. 127.0.0.1.
-
-`protocol` Used for creating url in combination with `host`.
-
-`ports` Ports on which vector store is available. Used for creating url in combination with `protocol` and `host`.
-
-## Expose LLM Configuration
-
-To make pydantic parse corresponding json object to our `ChromaConfiguration` we need to add it to `AVAILABLE_VECTOR_STORES` variable:
+To make Pydantic parse the corresponding JSON object to our `ChromaConfiguration`, add it to the `AVAILABLE_VECTOR_STORES` variable:
 
 ```py
 AVAILABLE_VECTOR_STORES = Union[..., ChromaConfiguration]
 ```
 
+## Step 7: Create the Vector Store Client Builder
 
-## Create the Vector Store Client Builder
-
-We need to define how Chroma client is build in order to enable pre-run validation. For that we update [client_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/client_builders.py):
+Define how the Chroma client is built to enable pre-run validation. Update [client_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/client_builders.py):
 
 ```py
 from chromadb import HttpClient as ChromaHttpClient
@@ -160,7 +155,7 @@ class ChromaClientBuilder:
             configuration: Chroma connection settings.
 
         Returns:
-            HttpClient: Configured http client instance for Chroma.
+            HttpClient: Configured HTTP client instance for Chroma.
         """
         return ChromaHttpClient(
             host=configuration.host,
@@ -171,12 +166,11 @@ class ChromaClientBuilder:
 **Explanation**:
 
 - **Dependencies**: Use dependency injection (@inject) to ensure proper initialization.
-
 - **Configuration**: Extracts `host`, `port` from the `ChromaConfiguration`.
 
-## Create the Vector Store Builder
+## Step 8: Create the Vector Store Builder
 
-The builder is responsible for initializing the vector store. Our implementation leverages [llamaindex](https://docs.llamaindex.ai/en/stable/), to add the builder logic to [vector_store_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/vector_store_builders.py) we add necessary builder.
+The builder is responsible for initializing the vector store. Our implementation leverages [llamaindex](https://docs.llamaindex.ai/en/stable/). Add the builder logic to [vector_store_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/builders/vector_store_builders.py):
 
 ```py
 from injector import inject
@@ -219,14 +213,12 @@ class ChromaStoreBuilder:
 **Explanation**:
 
 - **Dependencies**: Use dependency injection (@inject) to ensure proper initialization.
-
 - **Configuration**: Extracts `host`, `port`, and `collection_name` from the `ChromaConfiguration`.
-
 - **Library Integration**: Uses `llama_index.vector_stores.chroma` to create the vector store instance.
 
-## Vector Store Validation
+## Step 9: Vector Store Validation
 
-Before embedding process it is checked if defined `collection-name` already exists at the vector store. In such case embedding process is skipped. To enable such checks we need to implement vector store validator in [vector_store_validators.py](https://github.com/feld-m/rag_blueprint/blob/main/src/embedding/validators/vector_store_validators.py):
+Before the embedding process, it is checked if the defined `collection-name` already exists at the vector store. In such a case, the embedding process is skipped. Implement the vector store validator in [vector_store_validators.py](https://github.com/feld-m/rag_blueprint/blob/main/src/embedding/validators/vector_store_validators.py):
 
 ```py
 from chromadb.api import ClientAPI as ChromaClient
@@ -262,7 +254,7 @@ class ChromaVectorStoreValidator(VectorStoreValidator):
 
     def validate(self) -> None:
         """
-        Valiuate the Chroma vector store settings.
+        Validate the Chroma vector store settings.
         """
         self.validate_collection()
 
@@ -277,9 +269,9 @@ class ChromaVectorStoreValidator(VectorStoreValidator):
             raise CollectionExistsException(collection_name)
 ```
 
-## Vector Store Validator Builder
+## Step 10: Vector Store Validator Builder
 
-For the above vector store validator we add builder to [vector_store_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/embedding/validators/builders.py):
+For the above vector store validator, add a builder to [vector_store_builders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/embedding/validators/builders.py):
 
 ```py
 from common.bootstrap.configuration.pipeline.embedding.vector_store.vector_store_configuration import (
@@ -316,9 +308,9 @@ class ChromaVectorStoreValidatorBuilder:
 
 ```
 
-## Create Vector Store Binder
+## Step 11: Create Vector Store Binder
 
-The last thing to do is add the correspodning binder that is responsible for initializing the vector store. For that we update [vector_store_binders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/vector_store/vector_store_binder.py):
+The last step is to add the corresponding binder responsible for initializing the vector store. Update [vector_store_binders.py](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/pipeline/embedding/vector_store/vector_store_binder.py):
 
 ```py
 from chromadb.api import ClientAPI as ChromaClient
@@ -397,4 +389,4 @@ class VectorStoreBinder(BaseBinder):
     ...
 ```
 
-It ensures us that all instances that we defined through this guide are successfully initialized during the bootstrap and ready to use. From this point Chroma database is available for use through [`configuration.json](https://github.com/feld-m/rag_blueprint/blob/main/src/common/bootstrap/configuration/configuration.json )
+This ensures that all instances defined in this guide are successfully initialized during the bootstrap and ready to use. From this point, the Chroma database is available for use in the pipeline.
