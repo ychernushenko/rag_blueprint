@@ -9,7 +9,7 @@ Requirements:
 
 ## Configuration & Secrets
 
-The default configuration is located in [configuration.default.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.default.json). This file configures Notion as the document datasource and defines default settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration guide [Docs in Progress].
+The default configuration is located in [configuration.default.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.default.json). This file configures Notion as the document datasource and defines default settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration [Configuration Setup](../how_to/how_to_configure.md).
 
 ### Secrets Configuration
 Create a secrets file at `configurations/secrets.default.env`. Below is a template:

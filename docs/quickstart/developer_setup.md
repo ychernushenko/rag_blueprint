@@ -9,7 +9,7 @@ Requirements:
 
 ## Configuration & Secrets
 
-The local configuration is located in [configuration.local.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.local.json). This file configures Notion as the document datasource and defines local settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration guide [Docs in Progress].
+The local configuration is located in [configuration.local.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.local.json). This file configures Notion as the document datasource and defines local settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration [QuickStart Setup](../how_to/how_to_configure.md).
 
 ### Secrets Configuration
 Create a secrets file at `configurations/secrets.local.env`. Below is a template:
@@ -109,7 +109,7 @@ Run the evaluation stage script:
 python src/evaluation.py --env local
 ```
 
-**_Important_:** For evaluation to proceed, Langfuse datasets must be populated either manually or via Chainlit's human feedback feature. For additional details, refer to the [Docs in Progress].
+**_Important_:** For evaluation to proceed, Langfuse datasets must be populated either manually or via Chainlit's human feedback feature. For additional details, refer to the [Evaluation Docs](../evaluation/in_progress.md).
 
 ## Git setup
 
