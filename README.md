@@ -12,57 +12,48 @@ It comes with built-in monitoring and observability tools for better troubleshoo
 
 ## 🚀 Features
 
-- **Multiple Knowledge Sources**: Native integration with Notion, Confluence and PDF files, while also being extensible for other data sources
-- **RAG Pipeline**:
-  - Chunking with markdown-aware text splitting
-  - Various embedding and large languagee models
-  - Vector storage with Qdrant
-- **Production Ready**:
-  - Comprehensive evaluation metrics using RAGAS
-  - Human feedback collection
-  - Full observability with Langfuse integration
-- **Interactive UI**: User-friendly chat interface powered by Chainlit
+- **Multiple Knowledge Base Integration**: Seamless extraction from several Data Sources(Confluence, Notion, PDF)
+- **Wide Models Support**: Availability of numerous embedding and language models
+- **Vector Search**: Efficient similarity search using vector stores
+- **Interactive Chat**: User-friendly interface for querying knowledge on [Chainlit](https://chainlit.io/)
+- **Performance Monitoring**: Query and response tracking with [Langfuse](https://langfuse.com/)
+- **Evaluation**: Comprehensive evaluation metrics using [RAGAS](https://docs.ragas.io/en/stable/)
+- **Setup flexibility**: Easy and flexible setup process of the pipeline
 
 ## 🛠️ Tech Stack
 
 ### Core
-- [Python](https://www.python.org/)
-- [LlamaIndex](https://www.llamaindex.ai/) -  RAG framework
-- [Chainlit](https://chainlit.io/) - Chat interface
-- [Langfuse](https://langfuse.com/) - LLM observability
-- [RAGAS](https://docs.ragas.io/) - RAG evaluation
+[Python](https://www.python.org/) • [LlamaIndex](https://www.llamaindex.ai/) • [Chainlit](https://chainlit.io/) • [Langfuse](https://langfuse.com/) • [RAGAS](https://docs.ragas.io/)
+
+---
 
 ### Data Sources
-- [Notion](https://developers.notion.com/)
-- [Confluence](https://developer.atlassian.com/cloud/confluence/rest/v2/intro/#about)
-- PDF files support
+[Notion](https://developers.notion.com/) • [Confluence](https://developer.atlassian.com/cloud/confluence/rest/v2/intro/#about) • PDF files
 
-### Models
+---
 
-#### Embedding Models
-- [VoyageAI](https://www.voyageai.com/)
-- [OpenAI](https://openai.com/)
-- Any embedding model in the [Hugging Face](https://huggingface.co/) model hub
+### Embedding Models
+[VoyageAI](https://www.voyageai.com/) • [OpenAI](https://openai.com/) • [Hugging Face](https://huggingface.co/)
 
-#### Language Models
-- [OpenAI](https://openai.com/) models
-- Any OpenAI-compatible API models
+---
+
+### Language Models
+[OpenAI](https://openai.com/) • Any [OpenAI](https://openai.com/)-compatible API models
+
+---
 
 ### Vector Stores
-- [Qdrant](https://qdrant.tech/)
-- [Chroma](https://www.trychroma.com/)
+[Qdrant](https://qdrant.tech/) • [Chroma](https://www.trychroma.com/)
+
+---
 
 ### Infrastructure
-- [PostgreSQL](https://www.postgresql.org/) - Metadata storage
-- Docker for containerization
+[PostgreSQL](https://www.postgresql.org/) • [Docker](https://www.docker.com/)
+
 
 ## 🚀 Quickstart
 
-1. Check the detailed [Quickstart Setup](https://feld-m.github.io/rag_blueprint/quickstart/quickstart_setup/)
-2. Access points after deployment:
-   - Chat UI: `http://localhost:8001`
-   - Qdrant Dashboard: `http://localhost:6333/dashboard`
-   - Langfuse: `http://localhost:3003`
+Check the detailed [Quickstart Setup](https://feld-m.github.io/rag_blueprint/quickstart/quickstart_setup/)
 
 ## 🏗️ Architecture
 
@@ -92,11 +83,7 @@ It comes with built-in monitoring and observability tools for better troubleshoo
 The system includes comprehensive evaluation capabilities:
 
 - **Automated Metrics** (via RAGAS):
-  - Faithfulness
-  - Answer Relevancy
-  - Context Precision
-  - Context Recall
-  - Harmfulness
+  - Faithfulness • Answer Relevancy • Context Precision • Context Recall • Harmfulness
 
 - **Human Feedback**:
   - Integrated feedback collection through Chainlit
@@ -112,15 +99,16 @@ The system includes comprehensive evaluation capabilities:
 
 ```
 .
-├── build/          # Build and deployment scripts
+├── build/            # Build and deployment scripts
 │   └── workstation/  # Build scripts for workstation setup
-├── env_vars/       # Environment configuration
-├── res/           # Assets
-└── src/           # Source code
-    ├── augmentation/  # Retrieval and UI components
-    ├── common/        # Shared utilities
-    ├── embedding/     # Data extraction and embedding
-    └── evaluate/      # Evaluation system
+├── configurations/   # Configuration and secrets files
+├── res/              # Assets
+└── src/              # Source code
+    ├── augmentation/   # Retrieval and UI components
+    ├── common/         # Shared utilities
+    ├── embedding/      # Data extraction and embedding
+    └── evaluate/       # Evaluation system
+├── tests/            # Unit tests
 ```
 
 ## 📚 Documentation
