@@ -50,6 +50,7 @@ Check how to configure vector store [here](how_to/how_to_configure/#vector-store
 - **Vector Search**: Efficient similarity search using vector stores
 - **Interactive Chat**: User-friendly interface for querying knowledge on [Chainlit](https://chainlit.io/)
 - **Performance Monitoring**: Query and response tracking with [Langfuse](https://langfuse.com/)
+- **Evaluation**: Comprehensive evaluation metrics using [RAGAS](https://docs.ragas.io/en/stable/)
 - **Setup flexibility**: Easy and flexible setup process of the pipeline
 
 ### Quick Start
