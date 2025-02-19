@@ -202,14 +202,18 @@ class PdfReader(BaseReader[PdfDocument]):
 
     def get_all_documents(self) -> List[PdfDocument]:
         documents = []
-        files = os.listdir(self.base_path)
+        pdf_files = [
+            f for f in os.listdir(self.base_path) if f.endswith(".pdf")
+        ]
         files_to_load = (
-            files if self.export_limit is None else files[: self.export_limit]
+            pdf_files
+            if self.export_limit is None
+            else pdf_files[: self.export_limit]
         )
 
         for file_name in tqdm(files_to_load, desc="Loading PDFs"):
             file_path = os.path.join(self.base_path, file_name)
-            if os.path.isfile(file_path) and file_name.endswith(".pdf"):
+            if os.path.isfile(file_path):
                 try:
                     parsed_docs = self.parser.parse(file_path)
                     documents.extend(parsed_docs)
