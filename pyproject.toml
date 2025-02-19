@@ -10,7 +10,7 @@ dependencies = [
     "backoff==2.2.1",
     "beautifulsoup4==4.12.3",
     "bs4==0.0.2",
-    "chainlit==2.0.5",
+    "chainlit==2.2.0",
     "chardet==5.2.0",
     "charset-normalizer==3.4.1",
     "chromadb==0.6.3",
