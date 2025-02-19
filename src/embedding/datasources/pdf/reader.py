@@ -23,10 +23,14 @@ class DefaultPDFParser:
             text = "\n\n".join(
                 page.extract_text() or "" for page in reader.pages
             )
-            metadata = self._extract_metadata(reader)
+            metadata = self._extract_metadata(
+                reader=reader, file_path=file_path
+            )
             return [PdfDocument(text=text, metadata=metadata)]
 
-    def _extract_metadata(self, reader: pypdf.PdfReader) -> dict:
+    def _extract_metadata(
+        self, reader: pypdf.PdfReader, file_path: str
+    ) -> dict:
         """Extract and process PDF metadata.
 
         Args:
@@ -39,7 +43,11 @@ class DefaultPDFParser:
             Converts date strings to ISO format where possible
         """
         pdf_metadata = reader.metadata
-        metadata = {}
+        metadata = {
+            "datasource": "pdf",
+            "url": file_path,
+            "title": os.path.basename(file_path),
+        }
         if pdf_metadata is not None:
             for key, value in pdf_metadata.items():
                 clean_key = key.strip("/")
@@ -194,14 +202,18 @@ class PdfReader(BaseReader[PdfDocument]):
 
     def get_all_documents(self) -> List[PdfDocument]:
         documents = []
-        files = os.listdir(self.base_path)
+        pdf_files = [
+            f for f in os.listdir(self.base_path) if f.endswith(".pdf")
+        ]
         files_to_load = (
-            files if self.export_limit is None else files[: self.export_limit]
+            pdf_files
+            if self.export_limit is None
+            else pdf_files[: self.export_limit]
         )
 
         for file_name in tqdm(files_to_load, desc="Loading PDFs"):
             file_path = os.path.join(self.base_path, file_name)
-            if os.path.isfile(file_path) and file_name.endswith(".pdf"):
+            if os.path.isfile(file_path):
                 try:
                     parsed_docs = self.parser.parse(file_path)
                     documents.extend(parsed_docs)

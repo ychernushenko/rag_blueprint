@@ -9,15 +9,12 @@ Requirements:
 
 ## Configuration & Secrets
 
-The default configuration is located in [configuration.default.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.default.json). This file configures Notion as the document datasource and defines default settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration [Configuration Setup](../how_to/how_to_configure.md).
+The default configuration is located in [configuration.default.json](https://github.com/feld-m/rag_blueprint/blob/main/configurations/configuration.default.json). This file configures toy PDF dataset as the document datasource and defines default settings for embedding, augmentation, and evaluation stages. To customize the setup, refer to the configuration [Configuration Setup](../how_to/how_to_configure.md).
 
 ### Secrets Configuration
 Create a secrets file at `configurations/secrets.default.env`. Below is a template:
 
 ```sh
-# Datasources
-RAG__DATASOURCES__NOTION__API_TOKEN=...
-
 # LLMs
 RAG__LLMS__OPENAI__API_KEY=...
 
@@ -29,7 +26,6 @@ RAG__LANGFUSE__SECRET_KEY=...
 RAG__LANGFUSE__PUBLIC_KEY=...
 ```
 
-- `RAG__DATASOURCES__NOTION__API_TOKEN`: Notion integration token to extract the documents.
 - `RAG__LLMS__OPENAI__API_KEY`: Required for connecting to [OpenAI](https://openai.com/) LLM.
 - **Langfuse Keys**: `RAG__LANGFUSE__SECRET_KEY` and `RAG__LANGFUSE__PUBLIC_KEY` are generated during initialization and will need to be updated later.
 

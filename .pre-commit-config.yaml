@@ -1,4 +1,4 @@
-exclude: ^(docs/src/|uv.lock)
+exclude: ^(docs/src/|uv.lock|data/)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0

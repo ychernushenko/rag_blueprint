@@ -410,7 +410,7 @@ wheels = [
 
 [[package]]
 name = "chainlit"
-version = "2.0.5"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -436,9 +436,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "watchfiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1e/d8/7173caf3ca0d7480b3614e3126da9c592692d353764326fc0e1702b9eddd/chainlit-2.0.5.tar.gz", hash = "sha256:8af7746999d6641c69c33b67e5325e2d018432dd0b3306926d7435b862b0bfe2", size = 4646512 }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/86/7dc7a0911b9df9f9cf66450f31054416a56d0df4f06924d418e632565a66/chainlit-2.2.0.tar.gz", hash = "sha256:42e40faf146a20eecf5911a9cfed2e54b3513f554dd817f248e9acd7abc0203e", size = 9472876 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dc/01/8f02145330355e2802b95f835afb4cf11ea503b779cd6136892d4940abc5/chainlit-2.0.5-py3-none-any.whl", hash = "sha256:30cd2c39a9393de047b4e64b3dcf84ca4f691cb61445d59ae9a29f8e1f1af006", size = 4709971 },
+    { url = "https://files.pythonhosted.org/packages/cf/65/c1b19903bc7a8bf0395c96943ddb7c4d30f3d8c76d0593ec6e946cde4954/chainlit-2.2.0-py3-none-any.whl", hash = "sha256:f222e25311ce6fdf4ce017d8f2c86547eb89036764eeb6275d368f28a8ce9381", size = 9622958 },
 ]
 
 [[package]]
@@ -3655,7 +3655,7 @@ requires-dist = [
     { name = "backoff", specifier = "==2.2.1" },
     { name = "beautifulsoup4", specifier = "==4.12.3" },
     { name = "bs4", specifier = "==0.0.2" },
-    { name = "chainlit", specifier = "==2.0.5" },
+    { name = "chainlit", specifier = "==2.2.0" },
     { name = "chardet", specifier = "==5.2.0" },
     { name = "charset-normalizer", specifier = "==3.4.1" },
     { name = "chromadb", specifier = "==0.6.3" },
