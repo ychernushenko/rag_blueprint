@@ -23,10 +23,14 @@ class DefaultPDFParser:
             text = "\n\n".join(
                 page.extract_text() or "" for page in reader.pages
             )
-            metadata = self._extract_metadata(reader)
+            metadata = self._extract_metadata(
+                reader=reader, file_path=file_path
+            )
             return [PdfDocument(text=text, metadata=metadata)]
 
-    def _extract_metadata(self, reader: pypdf.PdfReader) -> dict:
+    def _extract_metadata(
+        self, reader: pypdf.PdfReader, file_path: str
+    ) -> dict:
         """Extract and process PDF metadata.
 
         Args:
@@ -39,7 +43,11 @@ class DefaultPDFParser:
             Converts date strings to ISO format where possible
         """
         pdf_metadata = reader.metadata
-        metadata = {}
+        metadata = {
+            "datasource": "pdf",
+            "url": file_path,
+            "title": os.path.basename(file_path),
+        }
         if pdf_metadata is not None:
             for key, value in pdf_metadata.items():
                 clean_key = key.strip("/")
