@@ -244,7 +244,8 @@ def update_mkdocs_yml(nav_structure):
     # Base configuration for MkDocs
     config = {
         "site_name": "RAG Systems",
-        "repo_url": "https://github.com/rag_blueprint/",
+        "repo_url": "https://github.com/feld-m/rag_blueprint/",
+        "edit_uri": "edit/main/docs/",
         "theme": "readthedocs",
         "plugins": ["mkdocstrings", "search"],
         "watch": ["."],
