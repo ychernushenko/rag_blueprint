@@ -13,7 +13,10 @@ from llama_index.core.base.base_query_engine import BaseQueryEngine
 from augmentation.utils import ConversationUtils
 from common.bootstrap.initializer import AugmentationInitializer
 
-injector = AugmentationInitializer().init_injector()
+
+@cl.cache
+def cached_injector() -> AugmentationInitializer:
+    return AugmentationInitializer().init_injector()
 
 
 @cl.on_chat_start
@@ -22,7 +25,7 @@ async def start():
 
     Sets up session-specific query engine and displays welcome message.
     """
-    query_engine = injector.get(BaseQueryEngine)
+    query_engine = cached_injector().get(BaseQueryEngine)
     query_engine.set_session_id(cl.user_session.get("id"))
     cl.user_session.set("query_engine", query_engine)
     await ConversationUtils.get_welcome_message().send()
