@@ -105,14 +105,9 @@ class NotionDatasourceConfiguration(DatasourceConfiguration):
 
 
 class PdfDatasourceConfiguration(DatasourceConfiguration):
-    """Configuration for PDF data source.
-
-    Settings for accessing and processing PDF files.
-
-    Attributes:
-        base_path: Root directory containing PDF files
-    """
-
+    name: Literal[DatasourceName.PDF] = Field(
+        ..., description="The name of the data source."
+    )
     base_path: str = Field(
         ..., description="Base path to the directory containing PDF files"
     )
