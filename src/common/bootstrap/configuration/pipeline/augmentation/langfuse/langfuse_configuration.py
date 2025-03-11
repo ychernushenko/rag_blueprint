@@ -9,7 +9,6 @@ from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 # Secrets
 class LangfuseSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LANGFUSE__",
         env_nested_delimiter="__",
@@ -26,7 +25,6 @@ class LangfuseSecrets(BaseSettings):
 
 class LangfuseDatabaseSecrets(BaseSettings):
     model_config = ConfigDict(
-        env_file="configuration/secrets.default.env",
         env_file_encoding="utf-8",
         env_prefix="RAG__LANGFUSE__DATABASE__",
         env_nested_delimiter="__",
