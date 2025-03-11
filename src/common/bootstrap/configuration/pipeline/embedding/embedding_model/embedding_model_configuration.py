@@ -26,13 +26,6 @@ class EmbeddingModelProviderNames(str, Enum):
 
 
 # Secrets
-class HuggingFaceSecrets(BaseSettings):
-    # Placeholder to succeed secrets intialization
-    model_config = ConfigDict(
-        extra="ignore",
-    )
-
-
 class OpenAIEmbeddingModelSecrets(BaseSettings):
     model_config = ConfigDict(
         env_file_encoding="utf-8",
@@ -106,9 +99,6 @@ class EmbeddingModelConfiguration(ConfigurationWithSecrets, ABC):
 class HuggingFaceConfiguration(EmbeddingModelConfiguration):
     provider: Literal[EmbeddingModelProviderNames.HUGGING_FACE] = Field(
         ..., description="The provider of the embedding model."
-    )
-    secrets: HuggingFaceSecrets = Field(
-        None, description="The secrets for the language model."
     )
 
     builder: Callable = Field(

@@ -2,8 +2,7 @@ from abc import ABC
 from enum import Enum
 from typing import Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field
-from pydantic_settings import BaseSettings
+from pydantic import BaseModel, Field
 
 from common.bootstrap.secrets_configuration import ConfigurationWithSecrets
 
@@ -15,18 +14,6 @@ class VectorStoreName(str, Enum):
 
 
 # Secrets
-class QDrantSecrets(BaseSettings):
-    # Placeholder to succeed secrets intialization
-    model_config = ConfigDict(
-        extra="ignore",
-    )
-
-
-class ChromaSecrets(BaseSettings):
-    # Placeholder to succeed secrets intialization
-    model_config = ConfigDict(
-        extra="ignore",
-    )
 
 
 # Configuration
@@ -58,9 +45,6 @@ class QDrantConfiguration(VectorStoreConfiguration):
     name: Literal[VectorStoreName.QDRANT] = Field(
         ..., description="The name of the vector store."
     )
-    secrets: QDrantSecrets = Field(
-        None, description="The secrets for the Qdrant vector store."
-    )
 
     @property
     def url(self) -> str:
@@ -70,9 +54,6 @@ class QDrantConfiguration(VectorStoreConfiguration):
 class ChromaConfiguration(VectorStoreConfiguration):
     name: Literal[VectorStoreName.CHROMA] = Field(
         ..., description="The name of the vector store."
-    )
-    secrets: ChromaSecrets = Field(
-        None, description="The secrets for the Qdrant vector store."
     )
 
 

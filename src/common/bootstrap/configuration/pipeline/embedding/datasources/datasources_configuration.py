@@ -50,12 +50,6 @@ class ConfluenceSecrets(BaseSettings):
     )
 
 
-class PdfSecrets(BaseSettings):
-    model_config = ConfigDict(
-        extra="ignore",
-    )
-
-
 # Configuration
 
 
@@ -116,9 +110,6 @@ class PdfDatasourceConfiguration(DatasourceConfiguration):
     )
     nlm_parser_api_base: str = Field(
         None, description="NLM parser API base URL"
-    )
-    secrets: PdfSecrets = Field(
-        None, description="The secrets for the data source."
     )
 
 
