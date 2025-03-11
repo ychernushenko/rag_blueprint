@@ -52,6 +52,8 @@ RAG__DATASOURCES__CONFLUENCE__USERNAME=<confluence_username>
 RAG__DATASOURCES__CONFLUENCE__PASSWORD=<confluence_password>
 ```
 
+> **Note**: If your datasource doesn't require secrets you can skip this step
+
 ## Step 4: Implement the Datasource Configuration
 
 Define the configuration class for the new datasource:
