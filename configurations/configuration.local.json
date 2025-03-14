@@ -6,9 +6,10 @@
         "embedding": {
             "datasources": [
                 {
-                    "name": "pdf",
-                    "export_limit": 10,
-                    "base_path": "data/bavarian_beer"
+                    "name": "hackernews",
+                    "host": "hacker-news.firebaseio.com",
+                    "protocol": "https",
+                    "export_limit": 100
                 }
             ],
             "embedding_model": {

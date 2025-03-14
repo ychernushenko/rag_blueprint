@@ -14,6 +14,7 @@ class DatasourceName(str, Enum):
     NOTION = "notion"
     CONFLUENCE = "confluence"
     PDF = "pdf"
+    HACKERNEWS = "hackernews"
 
 
 # Secrets
@@ -113,8 +114,27 @@ class PdfDatasourceConfiguration(DatasourceConfiguration):
     )
 
 
+class HackernewsDatasourceConfiguration(DatasourceConfiguration):
+    host: str = Field(
+        "hacker-news.firebaseio.com", description="Host of hackernews API."
+    )
+
+    protocol: Union[Literal["http"], Literal["https"]] = Field(
+        "https", description="The protocol for hackernews API."
+    )
+
+    name: Literal[DatasourceName.HACKERNEWS] = Field(
+        ..., description="The name of the data source."
+    )
+
+    @property
+    def base_url(self) -> str:
+        return f"{self.protocol}://{self.host}"
+
+
 AVAIALBLE_DATASOURCES = Union[
     NotionDatasourceConfiguration,
     ConfluenceDatasourceConfiguration,
     PdfDatasourceConfiguration,
+    HackernewsDatasourceConfiguration,
 ]
