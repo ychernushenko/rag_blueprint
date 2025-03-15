@@ -9,7 +9,7 @@
                     "name": "hackernews",
                     "host": "hacker-news.firebaseio.com",
                     "protocol": "https",
-                    "export_limit": 100
+                    "export_limit": 500
                 }
             ],
             "embedding_model": {
@@ -24,7 +24,7 @@
             },
             "vector_store": {
                 "name": "qdrant",
-                "collection_name": "collection-default-20250314",
+                "collection_name": "collection-default-hackernews",
                 "host": "qdrant",
                 "protocol": "http",
                 "ports": {
