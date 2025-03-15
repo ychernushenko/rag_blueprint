@@ -35,6 +35,8 @@ class Fixtures:
             self.stories[story_id] = {
                 "title": f"Title {i}",
                 "url": f"https://news.ycombinator.com/item?id={i}",
+                "type": "story",  # Add this line
+                "id": story_id,  # Add this line
             }
         return self
 
@@ -103,6 +105,7 @@ class Manager:
         return self.arrangements.service
 
 
+@pytest.mark.asyncio
 class TestHackernewsReader:
     @pytest.mark.parametrize(
         "export_limit,number_of_stories",
