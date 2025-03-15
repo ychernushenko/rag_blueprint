@@ -22,12 +22,8 @@ class HackernewsCleaner(BaseCleaner):
         """
         cleaned_documents = []
 
-        print("NUMBER_OF_DOCUMENTS" + len(documents))
         for document in HackernewsCleaner._get_documents_with_tqdm(documents):
-            if not HackernewsCleaner._has_empty_fields(document):
-                cleaned_documents.append(document)
-
-        print("NUMBER_OF_CLEANED_DOCUMENTS" + len(cleaned_documents))
+            cleaned_documents.append(document)
         return cleaned_documents
 
     @staticmethod

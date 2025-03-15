@@ -9,8 +9,10 @@ class HackernewsDocument(BaseDocument):
     from a Hacker News story dictionary.
 
     Attributes:
-        title (str): The title of the Hacker News story.
-        url (str): The URL of the Hacker News story.
+        text: Markdown-formatted story content
+        metadata: Extracted story metadata including dates, IDs, and URLs
+        excluded_embed_metadata_keys: Metadata keys to exclude from embeddings
+        excluded_llm_metadata_keys: Metadata keys to exclude from LLM context
     """
 
     @classmethod
@@ -25,7 +27,24 @@ class HackernewsDocument(BaseDocument):
             HackernewsDocument: An instance of HackernewsDocument with the title and URL set.
         """
         document = cls(
-            title=story.get("title", ""),
-            url=story.get("url", ""),
+            text=story.get("title", "") + " " + story.get("url", ""),
+            metadata=HackernewsDocument._get_metadata(story),
         )
         return document
+
+    @staticmethod
+    def _get_metadata(story: dict) -> dict:
+        """Extract and format page metadata.
+
+        Args:
+            story: Dictionary containing Hacker news story details
+
+        Returns:
+            dict: Structured metadata including type and IDs
+        """
+        return {
+            "type": story["type"],
+            "id": story["id"],
+            "title": story["title"],
+            "url": f"https://news.ycombinator.com/item?id={ story["id"]}",
+        }

@@ -10,7 +10,6 @@ from embedding.datasources.core.cleaner import Cleaner
 from embedding.datasources.hackernews.cleaner import HackernewsCleaner
 from embedding.datasources.hackernews.manager import HackernewsDatasourceManager
 from embedding.datasources.hackernews.reader import HackernewsReader
-from embedding.datasources.hackernews.splitter import HackernewsSplitter
 
 
 class HackernewsDatasourceManagerBuilder:
@@ -26,7 +25,7 @@ class HackernewsDatasourceManagerBuilder:
         configuration: HackernewsDatasourceConfiguration,
         reader: HackernewsReader,
         cleaner: Cleaner,
-        splitter: HackernewsSplitter,
+        splitter: BoundEmbeddingModelMarkdownSplitter,
     ) -> HackernewsDatasourceManager:
         """Creates a configured Hacker News datasource manager.
 
@@ -86,23 +85,3 @@ class HackernewsCleanerBuilder:
             Cleaner: Configured cleaner instance
         """
         return HackernewsCleaner()
-
-
-class HackernewsSplitterBuilder:
-    """Builder for creating Hacker News content splitter instances.
-
-    Provides factory method to create Splitter objects for Hacker News content.
-    """
-
-    @staticmethod
-    @inject
-    def build(
-        markdown_splitter: BoundEmbeddingModelMarkdownSplitter,
-    ) -> HackernewsSplitter:
-        """
-        Builds a `HackernewsSplitter` instance using `MarkdownSplitter`.
-
-        :param markdown_splitter: MarkdownSplitter object
-        :return: HackernewsSplitter object
-        """
-        return HackernewsSplitter(markdown_splitter)

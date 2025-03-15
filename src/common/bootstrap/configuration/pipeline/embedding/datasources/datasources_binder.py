@@ -30,12 +30,10 @@ from embedding.datasources.hackernews.builders import (
     HackernewsCleanerBuilder,
     HackernewsDatasourceManagerBuilder,
     HackernewsReaderBuilder,
-    HackernewsSplitterBuilder,
 )
 from embedding.datasources.hackernews.cleaner import HackernewsCleaner
 from embedding.datasources.hackernews.manager import HackernewsDatasourceManager
 from embedding.datasources.hackernews.reader import HackernewsReader
-from embedding.datasources.hackernews.splitter import HackernewsSplitter
 from embedding.datasources.notion.builders import (
     NotionCleanerBuilder,
     NotionClientBuilder,
@@ -250,7 +248,6 @@ class HackernewsBinder(BaseBinder):
         self._bind_hackernews_configuration()
         self._bind_reader()
         self._bind_cleaner()
-        self._bind_splitter()
         self._bind_manager()
         return HackernewsDatasourceManager
 
@@ -277,13 +274,6 @@ class HackernewsBinder(BaseBinder):
     def _bind_cleaner(self) -> None:
         """Bind the Hacker News cleaner."""
         self.binder.bind(HackernewsCleaner, to=HackernewsCleanerBuilder.build)
-
-    def _bind_splitter(self) -> None:
-        """Bind the Hacker News splitter."""
-        self.binder.bind(
-            HackernewsSplitter,
-            to=HackernewsSplitterBuilder.build,
-        )
 
     def _bind_manager(self) -> None:
         """Bind the Hacker News datasource manager."""
