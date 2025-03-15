@@ -11,6 +11,7 @@ from common.bootstrap.configuration.pipeline.embedding.datasources.datasources_b
 from common.bootstrap.configuration.pipeline.embedding.datasources.datasources_configuration import (
     ConfluenceDatasourceConfiguration,
     DatasourceName,
+    HackernewsDatasourceConfiguration,
     NotionDatasourceConfiguration,
     PdfDatasourceConfiguration,
 )
@@ -25,6 +26,14 @@ from embedding.datasources.confluence.cleaner import ConfluenceCleaner
 from embedding.datasources.confluence.manager import ConfluenceDatasourceManager
 from embedding.datasources.confluence.reader import ConfluenceReader
 from embedding.datasources.confluence.splitter import ConfluenceSplitter
+from embedding.datasources.hackernews.builders import (
+    HackernewsCleanerBuilder,
+    HackernewsDatasourceManagerBuilder,
+    HackernewsReaderBuilder,
+)
+from embedding.datasources.hackernews.cleaner import HackernewsCleaner
+from embedding.datasources.hackernews.manager import HackernewsDatasourceManager
+from embedding.datasources.hackernews.reader import HackernewsReader
 from embedding.datasources.notion.builders import (
     NotionCleanerBuilder,
     NotionClientBuilder,
@@ -228,6 +237,52 @@ class PdfDatasourcesBinder(BaseBinder):
         )
 
 
+class HackernewsBinder(BaseBinder):
+    """Binder for the Hacker News datasources components."""
+
+    def bind(self) -> Type:
+        """Bind the Hacker News datasources components.
+
+        Returns:
+            Type: The Hacker News datasource manager."""
+        self._bind_hackernews_configuration()
+        self._bind_reader()
+        self._bind_cleaner()
+        self._bind_manager()
+        return HackernewsDatasourceManager
+
+    def _bind_hackernews_configuration(self) -> None:
+        """Bind the Hacker News datasource configuration."""
+        hackernews_configuration = [
+            configuration
+            for configuration in self.configuration.pipeline.embedding.datasources
+            if isinstance(configuration, HackernewsDatasourceConfiguration)
+        ][0]
+        self.binder.bind(
+            HackernewsDatasourceConfiguration,
+            to=hackernews_configuration,
+            scope=singleton,
+        )
+
+    def _bind_reader(self) -> None:
+        """Bind the Hacker News reader."""
+        self.binder.bind(
+            HackernewsReader,
+            to=HackernewsReaderBuilder.build,
+        )
+
+    def _bind_cleaner(self) -> None:
+        """Bind the Hacker News cleaner."""
+        self.binder.bind(HackernewsCleaner, to=HackernewsCleanerBuilder.build)
+
+    def _bind_manager(self) -> None:
+        """Bind the Hacker News datasource manager."""
+        self.binder.bind(
+            HackernewsDatasourceManager,
+            to=HackernewsDatasourceManagerBuilder.build,
+        )
+
+
 class DatasourcesBinder(BaseBinder):
     """Binder for the datasources components.
 
@@ -237,6 +292,7 @@ class DatasourcesBinder(BaseBinder):
         DatasourceName.CONFLUENCE: ConfluenceBinder,
         DatasourceName.NOTION: NotionDatasourceBinder,
         DatasourceName.PDF: PdfDatasourcesBinder,
+        DatasourceName.HACKERNEWS: HackernewsBinder,
     }
 
     def bind(self) -> None:
